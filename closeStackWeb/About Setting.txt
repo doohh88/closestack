@@ -26,9 +26,3 @@ tomcat 7.0 설치
 	Server Options->Publish module contexts to seperate XML files 선택
 	HTTP/1.1 포트 넘버 8181로 수정 (80포트는 개발 후 사용)
 7. 서버 우클릭 start(test url: http://localhost:8181/closestack)
-
-
-
-
-
-

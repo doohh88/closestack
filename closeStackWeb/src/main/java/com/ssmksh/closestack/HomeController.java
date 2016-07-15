@@ -36,4 +36,34 @@ public class HomeController {
 		return "home";
 	}
 	
+	@RequestMapping("/login")
+	public String login(Model model){
+		System.out.println("login()");
+		return "login";
+	}
+	
+	@RequestMapping("/overview")
+	public String overview(Model model){
+		System.out.println("overview()");
+		return "overview";
+	}
+	
+	@RequestMapping("/instance")
+	public String instance(Model model){
+		System.out.println("instance");
+		return "instance";
+	}
+	
+	@RequestMapping("/image")
+	public String image(Model model){
+		System.out.println("image()");
+		return "image";
+	}
+	
+	@RequestMapping("/network")
+	public String network(Model model){
+		System.out.println("network()");
+		return "network";
+	}
+	
 }
