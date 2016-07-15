@@ -1,0 +1,34 @@
+tomcat 7.0 설치
+1. http://tomcat.apache.org 접속
+2. tomcat 7.0 다운로드 후 압축 풀기(ex.C:\apache-tomcat-7.0.69)
+
+이클립스(Eclipse Mars) Spring Tool Suite 설치
+1. help->Exlipse Marketplace
+2. STS 검색
+3. Spring Tool Suit (STS) for Eclipse 3.8.0 RELEASE 설치
+
+스프링 프로젝트 만들기
+1. New->Project
+2. Spring->Spring Project or Spring Legacy Project
+3. Spring MVC Project 선택
+4. com.ssmksh.closestack 입력 후 프로젝트 생성
+5. 프로젝트 생성 후 개발 환경 변경
+	상단의 Open Perspective->spring 선택
+
+톰캣 서버 만들기
+1. 하단의 서버 탭의 No servers are avaliable. Click this link to create a new server.. 선택
+2. Apach->Tomcat v7.0 Server 선택
+	Browse...->tomcat 설치 위치(ex. C:\apache-tomcat-7.0.69)
+	JRE: jre1.8.0_91 선택(설치한 jre 선택) 후 Finish
+3. 생성된 서버 더블클릭
+4. 설정
+	Server Locations->use Tomcat installation 선택
+	Server Options->Publish module contexts to seperate XML files 선택
+	HTTP/1.1 포트 넘버 8181로 수정 (80포트는 개발 후 사용)
+7. 서버 우클릭 start(test url: http://localhost:8181/closestack)
+
+
+
+
+
+
