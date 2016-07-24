@@ -7,6 +7,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-	hello image page
+	<h1>hello image page</h1>
+	<nav> 
+		<a href="/closestack/overview/overviewMain">Overview</a>
+		<a href="/closestack/instance/instanceMain">Instance</a>
+		<a href="/closestack/image/imageMain">Image</a>
+		<a href="/closestack/network/networkMain">Network</a>
+	</nav>
+
+	<div style="margin-left: 25%">... page content ...</div>
 </body>
 </html>

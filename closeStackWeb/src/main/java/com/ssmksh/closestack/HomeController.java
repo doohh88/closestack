@@ -17,22 +17,18 @@ import com.ssmksh.closestack.dao.UserDAO;
 @Controller
 public class HomeController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	private static final Logger log = LoggerFactory.getLogger(HomeController.class);
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-		System.out.println("home()");
-		return "home";
+		log.info("home()");
+		return "redirect:sign/signIn";
 	}
 	
-	@RequestMapping("/login")
-	public String login(Model model){
-		System.out.println("login()");
-		return "login";
-	}
+	
 	
 	@RequestMapping("/overview")
 	public String overview(Model model){

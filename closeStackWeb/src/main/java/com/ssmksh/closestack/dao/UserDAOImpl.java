@@ -2,56 +2,52 @@ package com.ssmksh.closestack.dao;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.ssmksh.closestack.dto.User;
 
+@Repository
+@Service
 public class UserDAOImpl implements UserDAO {
-
-	@Autowired
-	MongoTemplate mongoTemplate;
+	private Logger log = LoggerFactory.getLogger(UserDAOImpl.class);
 	
-	private static String COLLECTION_NAME = "ssmksh";
+	@Autowired
+	private UserRepository repository;
 	
 	@Override
 	public User insert(User user) {
 		// TODO Auto-generated method stub
-		mongoTemplate.insert(user, COLLECTION_NAME);
+		log.info("insert()");
+		this.repository.save(user);
 		return user;
 	}
 
 	@Override
 	public List<User> getUsers() {
 		// TODO Auto-generated method stub
-		return (List<User>) mongoTemplate.findAll(User.class, COLLECTION_NAME);
+		return null;
 	}
 
 	@Override
 	public User getUser(User user) {
 		// TODO Auto-generated method stub
-		return mongoTemplate.findById(user.getId(), User.class, COLLECTION_NAME);
+		return null;
 	}
 
 	@Override
 	public void deleteUser(User user) {
 		// TODO Auto-generated method stub
-		Query query = new Query(new Criteria("id").is(user.getId()));
-		mongoTemplate.remove(query, COLLECTION_NAME);
+
 	}
 
 	@Override
 	public User updateUser(User user) {
 		// TODO Auto-generated method stub
-		Query query = new Query(new Criteria("id").is(user.getId()));
-		Update update = new Update();
-		update.set("userName", user.getUserName());
-		update.set("password", user.getPassword());
-		mongoTemplate.updateFirst(query, update, COLLECTION_NAME);
-		return user;
+		return null;
 	}
 
 }
