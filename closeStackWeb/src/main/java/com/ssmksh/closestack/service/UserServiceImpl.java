@@ -27,8 +27,11 @@ public class UserServiceImpl implements UserService {
 		Map<String, Object> map = model.asMap();
 		HttpServletRequest request = (HttpServletRequest) map.get("request");
 		String username = request.getParameter("username");
+		System.out.println("hello");
 		String password = request.getParameter("password");
+		System.out.println("hello");
 		String email = request.getParameter("email");
+		System.out.println("hello");
 		User user = new User(username, password, email);
 		userDAO.insert(user);
 	}

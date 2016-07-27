@@ -10,7 +10,7 @@
 	<h1>Sign Up for Free</h1>
 	<form method="post" action="signUpProc">
 		<p>
-			<input type="text" name="login" placeholder="Pick a username">
+			<input type="text" name="username" placeholder="Pick a username">
 		</p>
 		<p>
 			<input type="password" name="password" placeholder="Create a password">
