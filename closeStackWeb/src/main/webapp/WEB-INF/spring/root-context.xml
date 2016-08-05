@@ -6,7 +6,7 @@
 		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<mongo:mongo host="163.152.47.96" port="27017">
+	<mongo:mongo host="localhost" port="27017">
 		<mongo:options connections-per-host="8"
 			threads-allowed-to-block-for-connection-multiplier="4"
 			connect-timeout="1000" max-wait-time="1500" auto-connect-retry="true"

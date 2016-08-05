@@ -27,9 +27,7 @@ public class HomeController {
 		log.info("home()");
 		return "redirect:sign/signIn";
 	}
-	
-	
-	
+		
 	@RequestMapping("/overview")
 	public String overview(Model model){
 		System.out.println("overview()");
