@@ -1,12 +1,9 @@
 package com.ssmksh.closestack.master;
 
-import java.util.HashMap;
-
+import com.ssmksh.closestack.submit.Submit;
 import com.ssmksh.closestack.util.Node;
-import com.ssmksh.closestack.worker.Worker;
 
 import akka.actor.ActorRef;
-import akka.actor.Address;
 import akka.actor.UntypedActor;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent.MemberUp;
@@ -20,8 +17,7 @@ import lombok.Getter;
 public class Master extends UntypedActor {
 	LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 	Cluster cluster = Cluster.get(getContext().system());
-	public static final String REGISTRATION_TO_MASTER = "Master registrates the worker";
-	HashMap<Address, Node> workers = new HashMap<Address, Node>();
+	Resource rcPool = null;
 
 	private ActorRef launcher;
 
@@ -29,6 +25,7 @@ public class Master extends UntypedActor {
 	@Override
 	public void preStart() {
 		cluster.subscribe(getSelf(), MemberUp.class, UnreachableMember.class);
+		rcPool = Resource.getInstance();
 	}
 
 	// re-subscribe when restart
@@ -40,17 +37,22 @@ public class Master extends UntypedActor {
 	@Override
 	public void onReceive(Object message) throws Throwable {
 		// clustering part
-		if (message.equals(Worker.REGISTRATION_TO_WORKER)) {
+		if (message instanceof Node) {
+			Node node = (Node)message;
 			getContext().watch(getSender());
-			workers.put(getSender().path().address(), new Node(getSender(), false));
-			log.info("workers : {}", workers);
+			rcPool.put(node);
 		} else if (message instanceof MemberUp) {
 			MemberUp mUp = (MemberUp) message;
 			register(mUp.member());
 		} else if (message instanceof UnreachableMember) {
 			UnreachableMember mUnreachable = (UnreachableMember) message;
-			workers.remove(mUnreachable.member().address());
+			rcPool.remove(mUnreachable);
 		}
+//		
+//		else if (getSender().getClass() instanceof Submit){
+//			
+//		}
+		
 
 		else if (message instanceof String) {
 			log.info("Get message = {}", (String) message);
@@ -61,7 +63,8 @@ public class Master extends UntypedActor {
 
 	void register(Member member) {
 		if (member.hasRole("worker")) {
-			getContext().actorSelection(member.address() + "/user/worker").tell(REGISTRATION_TO_MASTER, getSelf());
+			Node node = new Node(getSelf());
+			getContext().actorSelection(member.address() + "/user/worker").tell(node, getSelf());
 		}
 	}
 }

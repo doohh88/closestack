@@ -1,11 +1,12 @@
 package com.ssmksh.closestack.util;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.ssmksh.closestack.master.MasterMain;
 
 public class Util {
 	private static final Logger log = LoggerFactory.getLogger(Util.class);
@@ -41,6 +42,19 @@ public class Util {
 		}
 
 		return appArgs;
-
 	}
+	
+	
+	public static String exec(String cmd){
+		String rst = null;
+		try{
+			Process p = Runtime.getRuntime().exec(cmd);
+		    BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		    rst = br.readLine();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return rst;
+	}
+	
 }
