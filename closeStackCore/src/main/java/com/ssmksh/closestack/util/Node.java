@@ -1,4 +1,4 @@
-package com.doohh.akkaClustering.util;
+package com.ssmksh.closestack.util;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;

@@ -1,4 +1,4 @@
-package com.doohh.akkaClustering.util;
+package com.ssmksh.closestack.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,7 +7,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.doohh.akkaClustering.master.MasterMain;
+import com.ssmksh.closestack.master.MasterMain;
 
 public class PropFactory {
 	Logger log = LoggerFactory.getLogger(PropFactory.class);

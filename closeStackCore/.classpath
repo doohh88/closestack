@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="com/doohh/akkaClustering/deploy/SubmitCli.java|com/doohh/akkaClustering/deploy/Launcher.java|com/doohh/akkaClustering/deploy/CLauncher.java|com/doohh/akkaClustering/deploy/CSubmitCli.java|com/doohh/akkaClustering/deploy/CSubmitMain.java|com/doohh/akkaClustering/deploy/CUserAppConf.java|com/doohh/akkaClustering/deploy/CSubmit.java|copy/CLauncher.java|copy/Master.java|copy/Worker.java" kind="src" output="target/classes" path="src/main/java">
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
@@ -23,6 +23,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
