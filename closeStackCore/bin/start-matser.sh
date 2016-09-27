@@ -1,19 +1,19 @@
 #!/bin/sh
-if [ -z "${DISTDEEP_HOME}" ]; then
-  export DISTDEEP_HOME="$(cd ..; pwd)"
+if [ -z "${CLOSESTACK_HOME}" ]; then
+  export CLOSESTACK_HOME="$(cd ..; pwd)"
 fi
-#echo "DISTDEEP_HOME = $DISTDEEP_HOME"
+#echo "CLOSESTACK_HOME = $CLOSESTACK_HOME"
 
-if [ "$DISTDEEP_PORT" = "" ]; then
-  DISTDEEP_PORT=2551
+if [ "$CLOSESTACK_PORT" = "" ]; then
+  CLOSESTACK_PORT=2551
 fi
-#echo "DISTDEEP_PORT = $DISTDEEP_PORT"
+#echo "CLOSESTACK_PORT = $CLOSESTACK_PORT"
 
-if [ "$DISTDEEP_HOST" = "" ]; then
-  DISTDEEP_HOST="$(wget http://ipecho.net/plain -O - -q ; echo)"
+if [ "$CLOSESTACK_HOST" = "" ]; then
+  CLOSESTACK_HOST="$(wget http://ipecho.net/plain -O - -q ; echo)"
 fi
-#echo "DISTDEEP_HOST = $DISTDEEP_HOST"
+#echo "CLOSESTACK_HOST = $CLOSESTACK_HOST"
 
-CLASS="com.doohh.akkaClustering.master.MasterMain"
-java -cp $DISTDEEP_HOME/jars/distDeep-core-0.0.1.jar $CLASS -h $DISTDEEP_HOST &
+CLASS="com.ssmksh.closestack.master.MasterMain"
+java -cp $CLOSESTACK_HOME/jars/distDeep-core-0.0.1.jar $CLASS -h $CLOSESTACK_HOST &
 echo $!> master.pid

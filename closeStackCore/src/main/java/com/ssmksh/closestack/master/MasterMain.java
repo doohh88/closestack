@@ -18,7 +18,7 @@ public class MasterMain {
 	public static String hostIP = "127.0.0.1";
 	@Option(name = "--port", usage = "port", aliases = "-p")
 	public static String port = "2551";
-	public static String systemName = "deepDist";
+	public static String systemName = "closestack";
 
 	public static void main(String[] args) {
 		Util.parseArgs(args, new MasterMain());
@@ -26,7 +26,7 @@ public class MasterMain {
 		String seedNodes = PropFactory.getInstance().getSeedConf("master");
 		String role = "[master]";
 
-		log.info("Starting distDepp Master");
+		log.info("Starting closestack Master");
 		Config conf = ConfigFactory.parseString("akka.remote.netty.tcp.hostname=" + hostIP)
 				.withFallback(ConfigFactory.parseString("akka.remote.netty.tcp.port=" + port))
 				.withFallback(ConfigFactory.parseString("akka.cluster.seed-nodes=" + seedNodes))

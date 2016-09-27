@@ -20,7 +20,7 @@ import lombok.Getter;
 public class Master extends UntypedActor {
 	LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 	Cluster cluster = Cluster.get(getContext().system());
-	public static final String REGISTRATION_TO_MASTER = "Master registrate the worker";
+	public static final String REGISTRATION_TO_MASTER = "Master registrates the worker";
 	HashMap<Address, Node> workers = new HashMap<Address, Node>();
 
 	private ActorRef launcher;

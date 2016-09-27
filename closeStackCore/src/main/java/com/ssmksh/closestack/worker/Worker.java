@@ -16,7 +16,7 @@ import lombok.Getter;
 
 @Getter
 public class Worker extends UntypedActor {
-	public static final String REGISTRATION_TO_WORKER = "Worker registrate the master";
+	public static final String REGISTRATION_TO_WORKER = "Worker registrates the master";
 	LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 	Cluster cluster = Cluster.get(getContext().system());
 	HashMap<Address, Node> masters = new HashMap<Address, Node>();

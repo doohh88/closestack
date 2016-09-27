@@ -46,7 +46,7 @@ public class PropFactory {
 	private void setSeedList(String role) {
 		String seedNodes = props.getProperty("seed-nodes");
 		if (seedNodes == null) {
-			log.info("if you have seed-nodes, please input seed-nodes IP in $DISTDEEPHOME/conf/config.properties");
+			log.info("if you have seed-nodes, please input seed-nodes IP in $CLOSESTACK_HOME/conf/config.properties");
 			seedNodes = MasterMain.hostIP;
 		} 		
 		seedList = new String(seedNodes).split(",");

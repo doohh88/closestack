@@ -18,15 +18,15 @@ public class WorkerMain {
 	public static String hostIP = "127.0.0.1";
 	@Option(name = "--port", usage = "port", aliases = "-p")
 	public static String port = "0";
-	public static String systemName = "deepDist";
+	public static String systemName = "closestack";
 
 	public static void main(String[] args) {
+		Util.parseArgs(args, new WorkerMain());
+		
 		String seedNodes = PropFactory.getInstance().getSeedConf("worker");
 		String role = "[worker]";
 		
-		Util.parseArgs(args, new WorkerMain());
-
-		log.info("Starting distDepp worker");
+		log.info("Starting closestack worker");
 		Config conf = ConfigFactory.parseString("akka.remote.netty.tcp.hostname=" + hostIP)
 				.withFallback(ConfigFactory.parseString("akka.remote.netty.tcp.port=" + port))
 				.withFallback(ConfigFactory.parseString("akka.cluster.seed-nodes=" + seedNodes))
