@@ -27,11 +27,11 @@ public class UserServiceImpl implements UserService {
 		Map<String, Object> map = model.asMap();
 		HttpServletRequest request = (HttpServletRequest) map.get("request");
 		String username = request.getParameter("username");
-		System.out.println("hello");
+		System.out.println(username);
 		String password = request.getParameter("password");
-		System.out.println("hello");
+		System.out.println(password);
 		String email = request.getParameter("email");
-		System.out.println("hello");
+		System.out.println(email);
 		User user = new User(username, password, email);
 		userDAO.insert(user);
 	}
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUser(User user) {
+	public User getUser(String user) {
 		logger.info("userServiceImple.getUser: {}", user);
 		return (User) userDAO.getUser(user);
 	}

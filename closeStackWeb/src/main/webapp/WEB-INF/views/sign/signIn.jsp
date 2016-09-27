@@ -34,11 +34,11 @@
 						<h3 class="panel-title">Please Sign In</h3>
 					</div>
 					<div class="panel-body">
-						<form role="form">
+						<form role="form" action="signInProc" method="post">
 							<fieldset>
 								<div class="form-group">
-									<input class="form-control" placeholder="E-mail" name="email"
-										type="email" autofocus>
+									<input class="form-control" placeholder="Id" name="id"
+										type="text" autofocus>
 								</div>
 								<div class="form-group">
 									<input class="form-control" placeholder="Password"
@@ -49,9 +49,8 @@
 										value="Remember Me">Remember Me
 									</label>
 								</div>
-
-								<a href="/closestack/overview/overviewMain"
-									class="btn btn-lg btn-success btn-block">Login</a>
+				
+								<input class="btn btn-lg btn-success btn-block" type="submit" value="Login"/>
 
 								<div align="right" style="margin-top: 20px">
 									<a href="signUp">SignUp</a>

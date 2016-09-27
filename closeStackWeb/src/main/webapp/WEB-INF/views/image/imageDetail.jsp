@@ -19,10 +19,11 @@
 	rel="stylesheet">
 <link href="<%=cp%>/resources/bootstrap/css/simple-sidebar.css"
 	rel="stylesheet">
-<title>Instance</title>
+<title>Image</title>
 </head>
 <body>
-	<div id="wrapper">
+	
+<div id="wrapper">
 
 		<!-- Sidebar -->
 		<div id="sidebar-wrapper">
@@ -31,28 +32,26 @@
 						CloseStack </a></li>
 				<li><a href="<%=C.Url.OVERVIEW%>"> Overview </a></li>
 				<li><a href="<%=C.Url.INSTANCE%>"><i></i> Instance </a></li>
-				<li><a href="<%=C.Url.IMAGE%>"> Image </a></li>
-				<li class="active"><a href="<%=C.Url.NETWORK%>"><i></i>
-						Network </a></li>
+				<li class="active"><a href="<%=C.Url.IMAGE%>"> Image </a></li>
+				<li><a href="<%=C.Url.NETWORK%>"><i></i> Network </a></li>
 
 			</ul>
 		</div>
 		<!-- /#sidebar-wrapper -->
 
 
-		<div class="container-fluid">
+		<div class="container-fluid"
+			style="margin-left: 50px; margin-right: 50px">
 
-			<div class="col-lg-12">
-				<h1 class="page-header">Network</h1>
-			</div>
+			<h3>Image Detail Page</h3>
 
-		</div>
+
+	</div>
 	</div>
 
 
 	</div>
 	<!-- /#wrapper -->
-
 
 
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"

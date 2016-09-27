@@ -29,19 +29,22 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public List<User> getUsers() {
 		// TODO Auto-generated method stub
+		log.info("getUsers()");
+	
+		
 		return null;
 	}
 
 	@Override
-	public User getUser(User user) {
+	public User getUser(String username) {
 		// TODO Auto-generated method stub
-		return null;
+		return repository.findByUsername(username);
 	}
 
 	@Override
 	public void deleteUser(User user) {
 		// TODO Auto-generated method stub
-
+		this.repository.delete(user);
 	}
 
 	@Override
