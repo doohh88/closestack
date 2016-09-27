@@ -1,4 +1,4 @@
-package com.ssmksh.network;
+package com.ssmksh.closestack.network;
 
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
