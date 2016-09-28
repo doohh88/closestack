@@ -1,6 +1,8 @@
 package com.ssmksh.closestack.util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -30,10 +32,9 @@ public class Util {
 
 		CmdLineParser parser = new CmdLineParser(obj);
 		try {
-			if(parseArgs == null){
+			if (parseArgs == null) {
 				parser.parseArgument(args);
-			}
-			else {
+			} else {
 				parser.parseArgument(parseArgs);
 			}
 		} catch (CmdLineException e) {
@@ -43,18 +44,40 @@ public class Util {
 
 		return appArgs;
 	}
-	
-	
-	public static String exec(String cmd){
+
+	public static String exec(String cmd) {
 		String rst = null;
-		try{
-			Process p = Runtime.getRuntime().exec(cmd);
-		    BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		    rst = br.readLine();
-		} catch(Exception e){
-			e.printStackTrace();
+		if (isUnix()) {
+			try {
+				log.info("executer command: {}", cmd);
+				Process p = Runtime.getRuntime().exec(cmd);
+				BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				rst = br.readLine();
+				if (rst.contains("Permission denied")) {
+					rst = br.readLine();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return rst;
 	}
+
+	public static boolean isUnix() {
+		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0);
+	}
 	
+	public static void write(String fileName, String str){
+		try {
+			File file = new File(fileName);
+			FileWriter fw = new FileWriter(file, false);
+			fw.write(str);
+			fw.flush();
+			fw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

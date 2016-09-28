@@ -1,3 +1,5 @@
 #!/bin/sh
-kill -9 `cat < worker.pid `
-rm worker.pid
+./query.sh stop
+
+#kill -9 `cat < worker.pid `
+#rm worker.pid

@@ -108,7 +108,7 @@
 								</transformer>
 							</transformers>
 							<outputDirectory>jars</outputDirectory>
-							<finalName>distDeep-core-${version}</finalName>
+							<finalName>closestack-core</finalName>
 						</configuration>
 					</execution>
 				</executions>
