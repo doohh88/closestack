@@ -62,12 +62,6 @@ public class Worker extends UntypedActor {
 			MemberUp mUp = (MemberUp) message;
 			log.info("Member is Up: {}", mUp.member());
 			register(mUp.member());
-		} else if (message instanceof UnreachableMember) {
-			UnreachableMember mUnreachable = (UnreachableMember) message;
-			log.info("Member detected as unreachable: {}", mUnreachable.member());
-		} else if (message instanceof MemberRemoved) {
-			MemberRemoved mRemoved = (MemberRemoved) message;
-			log.info("Member is Removed: {}", mRemoved.member());
 		} else if (message instanceof MemberEvent) {
 		}
 
@@ -80,17 +74,14 @@ public class Worker extends UntypedActor {
 		// Query part
 		else if (message instanceof QueryConf) {
 			QueryConf queryConf = (QueryConf) message;
-			log.info("get QueryConf");
-			log.info("query: {}", queryConf.getArgs());
+			log.info("get query: {}", queryConf.getArgs());
 			String[] args = queryConf.getArgs();
 			String cmd = args[0];
 			
 			if(cmd.equals("stop")){
-				System.out.println("cluster.sefAddress(): " + cluster.selfAddress());
+				log.info("exec query: {}", queryConf.getArgs());
 				cluster.leave(cluster.selfAddress());
-				//getContext().system().terminate();
-				Await.ready(getContext().system().terminate(), Duration.Inf());
-
+				getContext().system().terminate();
 			}
 		}
 

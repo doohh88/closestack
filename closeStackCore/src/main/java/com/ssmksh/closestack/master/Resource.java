@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.ssmksh.closestack.util.Node;
 
 import akka.actor.Address;
-import akka.cluster.ClusterEvent.MemberRemoved;
+import akka.cluster.ClusterEvent.UnreachableMember;
 
 public enum Resource {
 	INSTANCE;
@@ -26,12 +26,12 @@ public enum Resource {
 		nodes.put(node.getActorRef().path().address(), node);		
 	}
 	
-	public static void remove(MemberRemoved mRemoved){
-		Node node = nodes.get(mRemoved.member().address());
+	public static void remove(UnreachableMember mUnreachable){
+		Node node = nodes.get(mUnreachable.member().address());
 		CPU -= node.getCPU();
 		RAM -= node.getRAM();
 		DISK -= node.getDISK();
-		nodes.remove(mRemoved.member().address());
+		nodes.remove(mUnreachable.member().address());
 	}
 	
 	public static HashMap<Address, Node> getNodes() {

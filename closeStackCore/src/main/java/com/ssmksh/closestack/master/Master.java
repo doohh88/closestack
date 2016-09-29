@@ -15,8 +15,6 @@ import akka.cluster.Member;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import lombok.Getter;
-import scala.concurrent.Await;
-import scala.concurrent.duration.Duration;
 
 @Getter
 public class Master extends UntypedActor {
@@ -58,35 +56,28 @@ public class Master extends UntypedActor {
 		} else if (message instanceof UnreachableMember) {
 			UnreachableMember mUnreachable = (UnreachableMember) message;
 			log.info("Member detected as unreachable: {}", mUnreachable.member());
+			rcPool.remove(mUnreachable);
 		} else if (message instanceof MemberRemoved) {
 			MemberRemoved mRemoved = (MemberRemoved) message;
 			log.info("Member is Removed: {}", mRemoved.member());
-			rcPool.remove(mRemoved);
 		} else if (message instanceof MemberEvent) {
 		}
 
 		// Query part
 		else if (message instanceof QueryConf) {
 			QueryConf queryConf = (QueryConf) message;
-			log.info("get QueryConf");
-			log.info("query: {}", queryConf.getArgs());
+			log.info("get query: {}", queryConf.getArgs());
 			String[] args = queryConf.getArgs();
 			String cmd = args[0];
 			System.out.println("cmd: " + cmd);
 			if(cmd.equals("getResource")){
-				System.out.println("getResource");
+				log.info("exec query: {}", queryConf.getArgs());
 				String rst = " vcpu : " + rcPool.getCPU() + " ram : " + rcPool.getRAM() + " disk : " + rcPool.getDISK();
 				getSender().tell(rst, getSelf());	
 			} else if(cmd.equals("stop")){
-				System.out.println("stop");
-				System.out.println("cluster.sefAddress(): " + cluster.selfAddress());
-				//cluster.leave(cluster.selfAddress());
+				log.info("exec query: {}", queryConf.getArgs());
 				cluster.leave(cluster.selfAddress());
-//				Thread.sleep(5000);
-//				getContext().system().terminate();
-				//getContext().system().shutdown();
-				//getContext().stop(getSelf());
-				Await.ready(getContext().system().terminate(), Duration.Inf());
+				getContext().system().terminate();
 			}
 		}
 		

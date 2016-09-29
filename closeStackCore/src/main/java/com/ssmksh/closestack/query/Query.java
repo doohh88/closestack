@@ -62,7 +62,7 @@ public class Query extends UntypedActor {
 		@Override
 		public final void onComplete(Throwable t, T result) throws Exception {
 			log.info("Completed.");
-			Await.ready(getContext().system().terminate(), Duration.Inf());
+			getContext().system().terminate();
 		}
 	}
 }
