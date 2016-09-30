@@ -18,13 +18,26 @@ public class WorkerMain {
 	public static String hostIP = "127.0.0.1";
 	@Option(name = "--port", usage = "port", aliases = "-p")
 	public static String port = "0";
+	@Option(name = "--role", usage = "role", aliases = "-r")
+	public static String role = "none";
+	
 	public static String systemName = "closestack";
-
+	
 	public static void main(String[] args) {
 		Util.parseArgs(args, new WorkerMain());
 		
 		String seedNodes = PropFactory.getInstance().getSeedConf("worker");
-		String role = "[worker]";
+		String role = null;
+		
+		WorkerMain.role = "lxd";
+		
+		if(WorkerMain.role.equals("none")){
+			log.info("please input the worker's role. ex) -r kvm or -r lxd");
+			return;
+		} else {
+			role = "["+ WorkerMain.role +"]";
+		}
+		
 		
 		log.info("Starting closestack worker");
 		Config conf = ConfigFactory.parseString("akka.remote.netty.tcp.hostname=" + hostIP)

@@ -9,13 +9,15 @@ import akka.cluster.ClusterEvent.UnreachableMember;
 
 public enum Resource {
 	INSTANCE;
-	private static HashMap<Address, Node> nodes;
+	private static HashMap<Address, Node> kvmNodes;
+	private static HashMap<Address, Node> lxdNodes;	
 	private static int CPU = 0;
 	private static int RAM = 0;
 	private static int DISK = 0;
 	
 	public static Resource getInstance(){
-		nodes = new HashMap<Address, Node>();
+		kvmNodes = new HashMap<Address, Node>();
+		lxdNodes = new HashMap<Address, Node>();
 		return INSTANCE;
 	}
 	
@@ -23,21 +25,32 @@ public enum Resource {
 		CPU += node.getCPU();
 		RAM += node.getRAM();
 		DISK += node.getDISK();
-		nodes.put(node.getActorRef().path().address(), node);		
+		if(node.getRole().equals("kvm")){
+			kvmNodes.put(node.getActorRef().path().address(), node);
+			System.out.println("kvmNodes");
+			System.out.println(kvmNodes);
+		} else if(node.getRole().equals("lxd")){
+			lxdNodes.put(node.getActorRef().path().address(), node);
+			System.out.println("lxdNodes");
+			System.out.println(lxdNodes);
+		}				
 	}
 	
 	public static void remove(UnreachableMember mUnreachable){
-		Node node = nodes.get(mUnreachable.member().address());
+		Node node = kvmNodes.get(mUnreachable.member().address());		
+		if(node == null){
+			node = lxdNodes.get(mUnreachable.member().address());			
+		}
+		
 		CPU -= node.getCPU();
 		RAM -= node.getRAM();
 		DISK -= node.getDISK();
-		nodes.remove(mUnreachable.member().address());
+		
+		kvmNodes.remove(mUnreachable.member().address());
+		lxdNodes.remove(mUnreachable.member().address());
 	}
 	
-	public static HashMap<Address, Node> getNodes() {
-		return nodes;
-	}
-	
+		
 	public static int getCPU() {
 		return CPU;
 	}

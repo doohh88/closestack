@@ -8,15 +8,18 @@ import lombok.Data;
 @Data
 public class Node implements Serializable {
 	private ActorRef actorRef;
-	private int CPU; // MB
+	private String role;
+	private int CPU; // MB	
 	private int RAM; // MB
 	private int DISK;
 	private int usedCPU = 0;
 	private int usedRAM = 0;
 	private int usedDISK = 0;
+	
 
-	public Node(ActorRef actorRef) {
+	public Node(ActorRef actorRef, String role) {
 		this.actorRef = actorRef;
+		this.role = role;
 		init();
 	}
 

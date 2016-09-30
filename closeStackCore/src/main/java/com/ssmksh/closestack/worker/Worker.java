@@ -6,7 +6,7 @@ import com.ssmksh.closestack.query.QueryConf;
 import com.ssmksh.closestack.util.Node;
 import com.ssmksh.closestack.util.Util;
 import com.ssmksh.closestack.vm.LXD;
-import com.ssmksh.closestack.vm.VM;
+import com.ssmksh.closestack.vm.KVM;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
@@ -38,8 +38,14 @@ public class Worker extends UntypedActor {
 	@Override
 	public void preStart() {
 		cluster.subscribe(getSelf(), MemberUp.class);
-		LXDActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(LXDActor.class)), "LXDActor");
-		VMActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(VMActor.class)), "VMActor");
+		if (WorkerMain.role.equals("kvm")) {
+			System.out.println("generate KVMActor");
+			VMActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(KVMActor.class)), "VMActor");
+		} else {
+			System.out.println("generate LXDActor");
+			LXDActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(LXDActor.class)), "LXDActor");
+		}
+
 		String actorURL = cluster.selfAddress().toString() + "/user/worker";
 		Util.write("actor.url", actorURL);
 	}
@@ -54,6 +60,7 @@ public class Worker extends UntypedActor {
 	public void onReceive(Object message) throws Throwable {
 		if (message instanceof Node) {
 			Node node = (Node) message;
+			System.out.println(node);
 			masters.put(getSender().path().address(), node);
 		} else if (message instanceof CurrentClusterState) {
 			CurrentClusterState state = (CurrentClusterState) message;
@@ -65,7 +72,7 @@ public class Worker extends UntypedActor {
 		} else if (message instanceof MemberEvent) {
 		}
 
-		else if (message instanceof VM) {
+		else if (message instanceof KVM) {
 
 		} else if (message instanceof LXD) {
 
@@ -77,8 +84,8 @@ public class Worker extends UntypedActor {
 			log.info("get query: {}", queryConf.getArgs());
 			String[] args = queryConf.getArgs();
 			String cmd = args[0];
-			
-			if(cmd.equals("stop")){
+
+			if (cmd.equals("stop")) {
 				log.info("exec query: {}", queryConf.getArgs());
 				cluster.leave(cluster.selfAddress());
 				getContext().system().terminate();
@@ -95,8 +102,8 @@ public class Worker extends UntypedActor {
 
 	void register(Member member) {
 		if (member.hasRole("master")) {
-			Node node = new Node(getSelf());
-			getContext().actorSelection(member.address() + "/user/master").tell(node, getSelf());
+			Node workerNode = new Node(getSelf(), WorkerMain.role);
+			getContext().actorSelection(member.address() + "/user/master").tell(workerNode, getSelf());
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package com.ssmksh.closestack.vm;
 
-public class VM {
+public class KVM {
 	private String name;
 	private String IP;
 	private String state;

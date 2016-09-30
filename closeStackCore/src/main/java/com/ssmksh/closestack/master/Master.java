@@ -42,6 +42,7 @@ public class Master extends UntypedActor {
 		// clustering part
 		if (message instanceof Node) {
 			Node node = (Node) message;
+			System.out.println(node);
 			rcPool.put(node);
 			log.info("total CPUs = {}", rcPool.getCPU());
 			log.info("total RAMs = {}", rcPool.getRAM());
@@ -78,7 +79,9 @@ public class Master extends UntypedActor {
 				log.info("exec query: {}", queryConf.getArgs());
 				cluster.leave(cluster.selfAddress());
 				getContext().system().terminate();
-			}
+			} else if(cmd.equals("generate LXD")){
+				log.info("exec query: {}", queryConf.getArgs());
+			}			
 		}
 		
 		
@@ -92,9 +95,10 @@ public class Master extends UntypedActor {
 	}
 
 	void register(Member member) {
-		if (member.hasRole("worker")) {
-			Node node = new Node(getSelf());
-			getContext().actorSelection(member.address() + "/user/worker").tell(node, getSelf());
+		System.out.println(member.getRoles());
+		if (member.hasRole("lxd") || member.hasRole("kvm")) {
+			Node masterNode = new Node(getSelf(), "master");
+			getContext().actorSelection(member.address() + "/user/worker").tell(masterNode, getSelf());
 		}
 	}
 }
