@@ -13,6 +13,8 @@ public class C {
 		public static String INSTANCE = SERVER + "/instance/instanceMain";
 		
 		public static String NETWORK = SERVER + "/network/networkMain";
+		
+		public static String MASTERSERVER = "211.189.20.80";
 	}
 
 }

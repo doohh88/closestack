@@ -93,6 +93,9 @@
 
 	<div class="modal fade" id="createImage" tabindex="-1" role="dialog"
 		aria-labelledby="createImage" aria-hidden="true">
+		
+			<form role="form" action="crateImageproc" method="post">
+			<fieldset>
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -101,8 +104,6 @@
 					<h4 class="modal-title" id="myModalLabel">이미지 생성</h4>
 				</div>
 				<div class="modal-body">
-					<form role="form" action="crateImageproc" method="post">
-						<fieldset>
 							<div class="form-group">
 								<p>이름:*</p>
 								<input class="form-control" placeholder="Image name"
@@ -125,8 +126,7 @@
 											class="dropdown-item" href="#">Something else here</a>
 									</div>
 								</div>
-						</fieldset>
-					</form>
+						
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -134,6 +134,10 @@
 				</div>
 			</div>
 		</div>
+		
+		</fieldset>
+		</form>
+		
 	</div>
 
 

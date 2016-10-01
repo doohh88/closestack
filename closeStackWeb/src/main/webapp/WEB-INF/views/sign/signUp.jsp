@@ -23,6 +23,5 @@
 		</p>
 	</form>
 
-	</form>
 </body>
 </html>

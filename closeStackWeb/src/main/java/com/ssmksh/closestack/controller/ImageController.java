@@ -5,15 +5,21 @@ package com.ssmksh.closestack.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ssmksh.closestack.dto.Image;
+import com.ssmksh.closestack.dto.User;
 
+@Service
 @Controller
 @RequestMapping("/image")
 public class ImageController {
@@ -42,5 +48,15 @@ public class ImageController {
 		log.info("imageDetail()");
 		
 		return "image/imageDetail";
+	}
+	
+	@RequestMapping(value = "/createImage", method = RequestMethod.POST)
+	private String createImage(HttpSession session,HttpServletRequest request, Model model) {
+		
+		log.info("createImage()");
+		User user = (User)session.getAttribute("userLoginInfo");
+		
+	
+		return "redirect:/Image/imageMain";
 	}
 }

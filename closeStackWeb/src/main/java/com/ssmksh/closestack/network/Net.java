@@ -8,8 +8,18 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.routing.RoundRobinPool;
 
-public class Net {
-	 private ActorRef netActor = null;
+public enum Net {
+	INSTANCE;
+	
+	public static Net getInstance(){
+		return INSTANCE;
+	}
+	
+	private Net(){
+		init();
+	}
+	
+	private ActorRef netActor = null;
 	
 	void init(){
 		Config conf = ConfigFactory.load("akkaWeb");
@@ -19,5 +29,8 @@ public class Net {
 	
 	ActorRef getNetActor(){
 		return netActor;
-	}	
+	}	 
+	
+	
+
 }

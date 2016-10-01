@@ -15,5 +15,7 @@ public class NetworkController {
 	public String networkMain(){
 		log.info("networkMain()");
 		return "network/networkMain";
+		
+		
 	}
 }

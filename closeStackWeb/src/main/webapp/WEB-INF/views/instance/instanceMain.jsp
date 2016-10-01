@@ -66,15 +66,22 @@
 						<th data-field="image_name">이미지 이름</th>
 						<th data-field="ip">IP 주소</th>
 						<th data-field="size">크기</th>
-						<th data-field="key">키 페어</th>
-						<th data-field="status">상태</th>
-						<th data-field="possible">가용성 존</th>
-						<th data-field="work">작업</th>
 						<th data-field="power_status">전원 상태</th>
 						<th data-field="running_time">가동 시간</th>
 					</tr>
 
-					
+						<c:forEach items="${instanceList}" var="dto">
+						<tr>
+							<td><input name="select" type="checkbox" value="select" /></td>
+							<td>${dto.name}</td>
+							<td>${dto.flavor.name}</td>
+							<td>${dto.ip}</td>
+							<td>${dto.flavor.vCpus} vCpus| ${dto.flavor.ram} GB Ram |  ${dto.flavor.disk} GB Disk </td>
+							<td>${dto.status}</td>
+							<td>${dto.time}</td>
+
+						</tr>
+					</c:forEach>
 				</thead>
 			</table>
 
@@ -97,32 +104,40 @@
 						aria-hidden="true">X</button>
 					<h4 class="modal-title" id="myModalLabel">인스턴스 생성</h4>
 				</div>
-				<div class="modal-body" >
-					<form role="form" action="creatInstanceProc" method="post">
-						<fieldset>
+				<form role="form" action="createInstanceProc" method="post">
+					<fieldset>
+						<div class="modal-body" >
 							<div class="col-md-6" padding="5px">
 								
-								<h5> 인스턴스 이름: </h5>
-								<input class="form-control" placeholder="Instance Id" name="instanceId"	type="text" autofocus>
+								<div class="form-group">
+									<h5> 인스턴스 이름: </h5>
+									<input class="form-control" placeholder="Instance Id" name="instanceId"	type="text" autofocus>
+								</div>
 								
-								<h5> 인스턴스 패스워드: </h5>
-								<input class="form-control" placeholder="Instance PW" name="instancePw"	type="passward" autofocus>
+								<div class="form-group">
+									<h5> 인스턴스 패스워드: </h5>
+									<input class="form-control" placeholder="Instance PW" name="instancePw"	type="passward" autofocus>
+								</div>
 								
-								<h5> Flavor: </h5>
- 								<div class="dropdown">
-								  	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
-								    Flavor Menu
-								    <span class="caret"></span>
-								  	</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenu4">
-									<thead>
-									
-										<c:forEach items="${flavorList}" var="dto">
-											 <li><a href="#" class="drop" data-bind="click: $parent.status">${dto.name}</a></li>
-										</c:forEach>
-									
-									</thead>	
-									</ul>
+								<div class="form-group">
+									<h5> Flavor: </h5>
+									<select class="dropdown selectpicker form-control" name="dropFlavorName" id ="dropFlavorName">	
+										<thead>
+											<c:forEach items="${flavorList}" var="dto">
+												 <option value="${dto.name}"> <li><a href="#"  data-bind="click: $parent.status">${dto.name}</a></li></option>
+											</c:forEach>
+										</thead>							
+									</select>
+								</div>	
+								<div class="form-group">
+									<h5> OS: </h5>
+									<select class="dropdown selectpicker form-control" name="osName" id ="osName">	
+										<thead>
+											<c:forEach items="${osList}" var="name">
+												 <option value="${name}"><li><a href="#"  data-bind="click: $parent.status">${name}</a></li></option>
+											</c:forEach>
+										</thead>							
+									</select>
 								</div>
 							</div>
 							<div class="col-md-6" padding="5px" style="">
@@ -134,7 +149,7 @@
 										<h4><b>이름</b></h4>
 									</div>
 									<div class="col-md-6">
-										<h4 id="flavorName">m1.tiny</h4>
+										<h4 id="flavorName">tiny</h4>
 									</div>
 								</div>
 								<div>
@@ -145,6 +160,15 @@
 										<h4 id="flavorvCpus">1</h4>
 									</div>
 								</div>
+									<div>
+									<div class="col-md-6" >
+										<h4><b>Disk</b></h4>
+									</div>
+									<div class="col-md-6" >
+										<h4 id="flavorDisk">1</h4>
+									</div>
+								</div>
+								
 								<div>
 									<div class="col-md-6" >
 										<h4><b>RAM</b></h4>
@@ -155,20 +179,21 @@
 								</div>
 					
 							</div>
-						</fieldset>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" type="submit">생성</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-					
-				</div>
+							
+							<div style="margin-bottom:300px">
+							</div>
+						
+						
+						</div>
+						<div class="modal-footer">
+							<input  class="btn btn-primary" type="submit" value="생성"></input>
+							<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+						</div>
+					</fieldset>
+				</form>
 			</div>
 		</div>
 	</div>
-
-
-
 
 
 
@@ -178,24 +203,33 @@
 		src="<%=cp%>/resources/bower_components/jquery/dist/jquery.min.js"></script>
 	<script
 		src="<%=cp%>/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		
+	<script
+		src="<%=cp%>/resources/bower_components/metisMenu/dist/metisMenu.min.js"></script>
+	<script src="<%=cp%>/resources/dist/js/sb-admin-2.js"></script>
+		
 
 	<script type="text/javascript">
-	 var list = "${hashMapFlavor}"
-	
-	
-	$('.drop').click(function(e){
-		console.log("click")
-		var name;
+
+
+	$("select#dropFlavorName").on("change", function(value){
+        var This = $(this);
+        var selectedD = $(this).val();
+        console.log(selectedD);
+        
+    	var name;
 		var vCpus;
 		var ram;
+		var disk;
 		
 		<c:forEach items="${flavorList2}" var="dto">
 		
 			var tmp = "${dto.name}" 
-			if(tmp==$(this).text())
+			if(tmp==selectedD)
 			{
 				name = tmp
 				vCpus = "${dto.vCpus}"
+				disk="${dto.ram}"+" GB"
 				
 				if("${dto.ram}" > 3)
 					ram = "${dto.ram}"+" MB"
@@ -204,14 +238,22 @@
 			}
 			
 		</c:forEach>
-			   
-		$('#dropdownMenu1').text($(this).text());
+	
 		$('#flavorName').text(name);
 		$('#flavorvCpus').text(vCpus);
 		$('#flavorRam').text(ram);
+		$('#flavorDisk').text(disk);
 			
-		
+        
 	});
+	
+
+	$("select#osName").on("change", function(value){
+        var This = $(this);
+        var selectedD = $(this).val();
+        console.log(selectedD);
+        });
+	
 	</script>
 
 </body>
