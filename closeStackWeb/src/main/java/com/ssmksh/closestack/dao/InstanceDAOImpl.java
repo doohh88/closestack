@@ -20,58 +20,27 @@ public class InstanceDAOImpl implements InstanceDAO {
 	private InstanceRepository repository;
 
 	@Override
-	public Instance insert(Instance instance) {
+	public void insertInstance(Instance instance) {
 		// TODO Auto-generated method stub
-		log.info("insert()");
-		repository.save(instance);
-		return instance;
-	}
-
-
-	@Override
-	public Instance getInstance(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void deleteInstance(Instance instance) {
-		// TODO Auto-generated method stub
-		this.repository.delete(instance);
+		this.repository.save(instance);
 		
 	}
 
 	@Override
-	public Instance updatedeleteInstancer(Instance instance) {
+	public List<Instance> getInstances(String userName) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		
+		//Instance instance = this.repository.findByname("Aa");
+		
+		//System.out.println(instance.getName());
+		
+		List<Instance> instanceList = new ArrayList<Instance>();
+		
+		
+		
+		return instanceList;
 	}
-	
 
-
-	@Override
-	public List<Instance> getInstancesbyUserName(String userName) {
-		log.info("Instance findByUserName: "+userName);
-		
-		
-		log.info("Instance findByUserName: "+repository.count());
-		/*
-		Iterable<Instance> iterable = this.repository.findAll();
-		
-		repository.findAll();
-		
-		List<Instance> intanceList = new ArrayList<Instance>();
-		
-		for(Instance item:iterable){
-			if(item.getuserName().equals(userName))		
-				intanceList.add(item);
-		}
-		
-		*/
-		
-		List<Instance> intanceList = new ArrayList<Instance>();
-		
-		return intanceList;
-	}
 
 }

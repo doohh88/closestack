@@ -20,7 +20,6 @@ import com.ssmksh.closestack.dao.InstanceDAO;
 import com.ssmksh.closestack.dto.Flavor;
 import com.ssmksh.closestack.dto.Instance;
 import com.ssmksh.closestack.dto.User;
-import com.ssmksh.closestack.service.InstanceService;
 
 @Service
 @Controller
@@ -29,9 +28,7 @@ public class InstanceController {
 	private final Logger log = LoggerFactory.getLogger(InstanceController.class);
 	
 	@Autowired
-	InstanceService instanceService;
-	
-
+	InstanceDAO instanceDAO;
 	
 	@Autowired
 	FlavorDAO flavorDAO;
@@ -56,7 +53,8 @@ public class InstanceController {
 		flavorDAO.insertFlavor(large);
 		*/
 		
-		List<Instance> instanceList = instanceService.getInstances(user.getUsername());
+		//¿Ã∫Œ∫– error
+		//List<Instance> instanceList = instanceDAO.getInstances(user.getUsername());
 		List<Flavor> flavorList = flavorDAO.getFlavors();
 		
 		List<String> osList = new ArrayList<String>();
@@ -84,7 +82,20 @@ public class InstanceController {
 		System.out.println("createInstanceProc : "+ user.getUsername());
 	
 		model.addAttribute("request", request);
-		instanceService.insertInstance(model, user.getUsername());
+		
+		
+		String instanceId = request.getParameter("instanceId");
+		String instancePW = request.getParameter("instancePw");
+		String flavorName = request.getParameter("dropFlavorName");
+		String osName = request.getParameter("osName");
+		
+		
+		System.out.println(instanceId+" "+instancePW+" "+flavorName+" "+osName);
+		
+		Flavor flavor = flavorDAO.getFlavor(flavorName);
+		Instance instance = new Instance(user.getUsername(),instanceId,instancePW,osName,flavor);
+		
+		instanceDAO.insertInstance(instance);
 
 		return "redirect:/instance/instanceMain";
 	}

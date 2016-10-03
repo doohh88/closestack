@@ -29,6 +29,7 @@ public class Instance implements Serializable{
 		this.name = name;
 		this.pw = pw;
 		this.os = os;
+		this.ip = ip;
 		this.status = status;
 		this.time = time;
 		this.flavor = flavor;

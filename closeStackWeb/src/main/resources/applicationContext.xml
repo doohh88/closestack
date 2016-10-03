@@ -7,11 +7,11 @@
 
 	<context:annotation-config />
 	
-	<beans:bean id="userService" class="com.ssmksh.closestack.service.UserServiceImpl"></beans:bean>
 	<beans:bean id="userDAO" class="com.ssmksh.closestack.dao.UserDAOImpl"></beans:bean>
+	<beans:bean id="userService" class="com.ssmksh.closestack.service.UserServiceImpl"></beans:bean>
+
 	
 	<beans:bean id="instanceDAO" class="com.ssmksh.closestack.dao.InstanceDAOImpl"></beans:bean>
-	<beans:bean id="instanceService" class="com.ssmksh.closestack.service.InstanceServiceImpl"></beans:bean>
 	
 	<beans:bean id="flavorDAO" class="com.ssmksh.closestack.dao.FlavorDAOImpl"></beans:bean>
 	

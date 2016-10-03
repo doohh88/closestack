@@ -2,16 +2,14 @@ package com.ssmksh.closestack.dao;
 
 import java.util.List;
 
+import com.ssmksh.closestack.dto.Flavor;
 import com.ssmksh.closestack.dto.Instance;
 
 public interface InstanceDAO {
-	public Instance insert(Instance instance);
 	
-	public List<Instance> getInstancesbyUserName(String userName);
+	public void insertInstance(Instance instance);
 	
-	public Instance getInstance(String name);
-
-	public void deleteInstance(Instance instance);
+	public List<Instance> getInstances(String userName);
 	
-	public Instance updatedeleteInstancer(Instance instance);
+	
 }

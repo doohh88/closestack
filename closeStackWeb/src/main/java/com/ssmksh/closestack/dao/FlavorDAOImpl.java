@@ -14,7 +14,7 @@ import com.ssmksh.closestack.dto.Flavor;
 @Repository
 @Service
 public class FlavorDAOImpl implements FlavorDAO {
-	private Logger log = LoggerFactory.getLogger(UserDAOImpl.class);
+	private Logger log = LoggerFactory.getLogger(FlavorDAOImpl.class);
 	
 	@Autowired
 	private FlavorRepository repository;
