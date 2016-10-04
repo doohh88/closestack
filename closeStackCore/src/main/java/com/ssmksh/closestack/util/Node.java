@@ -2,6 +2,8 @@ package com.ssmksh.closestack.util;
 
 import java.io.Serializable;
 
+import com.ssmksh.closestack.dto.Flavor;
+
 import akka.actor.ActorRef;
 import lombok.Data;
 
@@ -15,7 +17,9 @@ public class Node implements Serializable {
 	private int usedCPU = 0;
 	private int usedRAM = 0;
 	private int usedDISK = 0;
-	
+	private int restCPU = 0;
+	private int restRAM = 0;
+	private int restDISK = 0;
 
 	public Node(ActorRef actorRef, String role) {
 		this.actorRef = actorRef;
@@ -52,8 +56,18 @@ public class Node implements Serializable {
 		if (rst == null) {
 			return 0;
 		} else {
-			return Integer.parseInt(rst);
+			return (int) Double.parseDouble(rst);
 		}
 	}
-
+	
+	public boolean canSave(Flavor flavor){
+		restCPU = CPU - usedCPU;
+		restRAM = RAM - usedRAM;
+		restDISK = DISK - usedDISK;
+		
+		if(flavor.getvCpus() > restCPU || flavor.getRam() > restRAM || flavor.getDisk() > restDISK)
+			return false;
+				
+		return true;
+	}
 }

@@ -48,6 +48,7 @@ public enum Resource {
 		
 		kvmNodes.remove(mUnreachable.member().address());
 		lxdNodes.remove(mUnreachable.member().address());
+		
 	}
 	
 		
@@ -61,5 +62,13 @@ public enum Resource {
 	
 	public static int getDISK() {
 		return DISK;
+	}
+	
+	public static HashMap<Address, Node> getKvmNodes() {
+		return kvmNodes;
+	}
+	
+	public static HashMap<Address, Node> getLxdNodes() {
+		return lxdNodes;
 	}
 }

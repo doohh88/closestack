@@ -1,9 +1,15 @@
 package com.ssmksh.closestack.master;
 
+import java.util.Collection;
+
+import com.ssmksh.closestack.dto.Flavor;
+import com.ssmksh.closestack.dto.Instance;
+import com.ssmksh.closestack.dto.TellCommand;
 import com.ssmksh.closestack.query.QueryConf;
 import com.ssmksh.closestack.util.Node;
 import com.ssmksh.closestack.util.Util;
 
+import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent.CurrentClusterState;
@@ -71,20 +77,62 @@ public class Master extends UntypedActor {
 			String[] args = queryConf.getArgs();
 			String cmd = args[0];
 			System.out.println("cmd: " + cmd);
-			if(cmd.equals("getResource")){
+			if (cmd.equals("getResource")) {
 				log.info("exec query: {}", queryConf.getArgs());
 				String rst = " vcpu : " + rcPool.getCPU() + " ram : " + rcPool.getRAM() + " disk : " + rcPool.getDISK();
-				getSender().tell(rst, getSelf());	
-			} else if(cmd.equals("stop")){
+				getSender().tell(rst, getSelf());
+			} else if (cmd.equals("stop")) {
 				log.info("exec query: {}", queryConf.getArgs());
 				cluster.leave(cluster.selfAddress());
 				getContext().system().terminate();
-			} else if(cmd.equals("generate LXD")){
+			} else if (cmd.equals("generate LXD")) {
 				log.info("exec query: {}", queryConf.getArgs());
-			}			
+			}
 		}
-		
-		
+
+		// TellCommand
+		else if (message instanceof TellCommand) {
+			System.out.println("get TellCommand");
+			TellCommand tellCommand = (TellCommand) message;
+			Instance instance = (Instance) tellCommand.getData();
+			Flavor flavor = (Flavor) instance.getFlavor();
+			if (instance.getType().equals("lxd")) {
+				Collection<Node> values = rcPool.getLxdNodes().values();
+				ActorRef worker = null;
+				for (Node node : values) {
+					if (node.canSave(flavor)) {
+						worker = node.getActorRef();
+						break;
+					}
+				}
+				if (worker == null) { //생성할 공간이 없음
+					System.out.println("no space");
+					getSender().tell("fail", getSelf());
+				} else{
+					System.out.println("ok");
+					getSender().tell("ok", getSelf());
+					worker.tell(tellCommand, getSender());
+				}
+
+			} else if (instance.getType().equals("kvm")) {
+				Collection<Node> values = rcPool.getKvmNodes().values();
+				ActorRef worker = null;
+				for (Node node : values) {
+					if (node.canSave(flavor)) {
+						worker = node.getActorRef();
+						break;
+					}
+				}
+				if (worker == null) { 
+					System.out.println("no space");
+					getSender().tell("fail", getSelf());
+				} else{
+					System.out.println("ok");
+					getSender().tell("ok", getSelf());
+					worker.tell(tellCommand, getSender());
+				}
+			}
+		}
 
 		// message & unhandled part
 		else if (message instanceof String) {
@@ -102,4 +150,3 @@ public class Master extends UntypedActor {
 		}
 	}
 }
-

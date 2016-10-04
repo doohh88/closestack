@@ -1,6 +1,8 @@
 package com.ssmksh.closestack.query;
 
-import java.util.concurrent.TimeoutException;
+import com.ssmksh.closestack.dto.Flavor;
+import com.ssmksh.closestack.dto.Instance;
+import com.ssmksh.closestack.dto.TellCommand;
 
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
@@ -11,7 +13,6 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
-import scala.concurrent.Await;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -33,12 +34,27 @@ public class Query extends UntypedActor {
 			QueryConf queryConf = (QueryConf) message;
 			actor = getContext().actorSelection(queryConf.actorURL);
 			log.info("sending QueryConf");
+			System.out.println(queryConf.actorURL);
+			
+	/*		Flavor flavor = new Flavor("a", 2, 10, 2);
+			//Instance instnace = new Instance("doohh", "a", "123", "ubuntu", "0", "stop", null, flavor);			
+			TellCommand tellCommand = null;	
+			if(queryConf.args.equals("generate")){
+				System.out.println("generate");
+				//tellCommand = new TellCommand<Instance>("generate", instnace);	
+			}
+			else {
+				System.out.println("delete");
+				//tellCommand = new TellCommand<Instance>("delete", instnace);	
+			}*/			
+			
 			Future<Object> future = Patterns.ask(actor, queryConf, timeout);
 
 			future.onSuccess(new SaySuccess<Object>(), ec);
 			future.onComplete(new SayComplete<Object>(), ec);
 			future.onFailure(new SayFailure<Object>(), ec);
 
+			
 		} else {
 			unhandled(message);
 		}

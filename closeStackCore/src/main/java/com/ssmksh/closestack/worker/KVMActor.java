@@ -1,14 +1,16 @@
 package com.ssmksh.closestack.worker;
 
-import com.ssmksh.closestack.vm.KVM;
+import com.ssmksh.closestack.dto.Instance;
 
-import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 
-public class KVMActor extends UntypedActor {
+public class KVMActor extends VMActor {
+	LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
 	@Override
 	public void onReceive(Object message) throws Throwable {
-		if (message instanceof KVM) {
+		if (message instanceof Instance) {
 
 		} else {
 			unhandled(message);

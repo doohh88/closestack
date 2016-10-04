@@ -14,6 +14,7 @@ public class PropFactory {
 
 	private static PropFactory instance;
 	private static Properties props;
+	String[] IPPool;
 	String[] seedList;
 	String seedConf;
 
@@ -49,7 +50,7 @@ public class PropFactory {
 			log.info("if you have seed-nodes, please input seed-nodes IP in $CLOSESTACK_HOME/conf/config.properties");
 			seedNodes = MasterMain.hostIP;
 		} 		
-		seedList = new String(seedNodes).split(",");
+		seedList = seedNodes.split(",");
 	}
 
 	public String[] getSeedList(String role) {
@@ -67,4 +68,10 @@ public class PropFactory {
 		seedNodes += "]";
 		return seedNodes;
 	}
+	
+	private void setIPPool(){
+		String IPs = props.getProperty("ip-pool");
+		IPPool = IPs.split(",");
+	}
+	
 }
