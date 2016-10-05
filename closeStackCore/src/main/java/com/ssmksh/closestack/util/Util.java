@@ -56,6 +56,10 @@ public class Util {
 				if (rst.contains("Permission denied")) {
 					rst = br.readLine();
 				}
+//				String line;
+//				while((line = br.readLine()) != null){
+//			        System.out.println(line);
+//			    }
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

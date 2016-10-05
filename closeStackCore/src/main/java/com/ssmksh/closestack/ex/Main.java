@@ -8,6 +8,8 @@ import com.ssmksh.closestack.util.Util;
 public class Main {
 	@Option(name = "--cmd", usage = "cmd", aliases = "-cm")
 	public static String cmd = "none";
+	@Option(name = "--os", usage = "os", aliases = "-o")
+	public static String os = "none";
 	@Option(name = "--name", usage = "name", aliases = "-n")
 	public static String name = "none";
 	@Option(name = "--cpu", usage = "cpu", aliases = "-c")
@@ -20,6 +22,9 @@ public class Main {
 	public static void main(String[] args) {
 		Util.parseArgs(args, new Main());
 
+		String r = Util.exec("./disk.sh");
+		System.out.println(r);
+		
 		if (cmd.equals("list")) {
 			list();
 		} else if (cmd.equals("generate")) {
@@ -40,7 +45,14 @@ public class Main {
 
 	public static void generate(String name) {
 		System.out.println("lxc launch ubuntu: " + name);
-		Util.exec("lxc launch ubuntu: " + name);
+		//Util.exec("lxc launch ubuntu: " + name);
+		String cmd = "./lxd-generate.sh " 
+				+ os + " " 
+				+ name + " "
+				+ cpu + " "
+				+ ram + " "
+				+ disk;
+		Util.exec(cmd);
 	}
 
 	public static void delete(String name) {
@@ -56,17 +68,5 @@ public class Main {
 	public static void stop(String name) {
 		System.out.println("lxc stop " + name);
 		Util.exec("lxc stop " + name);
-	}
-
-	void setCPU() {
-		Util.exec("lxc config set " + name + " limits.cpu " + cpu);
-	}
-
-	void setRAM() {
-		Util.exec("lxc config set " + name + " limits.memory " + ram + "GB");
-	}
-
-	void setDISK() {
-		Util.exec("lxc config device set " + name + " root size " + disk + "GB");
-	}
+	}	
 }

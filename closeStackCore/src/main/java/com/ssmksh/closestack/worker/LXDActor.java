@@ -30,12 +30,19 @@ public class LXDActor extends VMActor {
 	
 	void generate(Instance instance){
 		log.info("generate Instance: {}", instance);
-		Util.exec("lxc launch " + instance.getOs() + ": " + instance.getName());
+		//Util.exec("lxc launch " + instance.getOs() + ": " + instance.getName());
+		String cmd = "./lxd-generate.sh " 
+				+ instance.getOs() + " " 
+				+ instance.getName() + " "
+				+ instance.getFlavor().getvCpus() + " "
+				+ instance.getFlavor().getRam() + " "
+				+ instance.getFlavor().getDisk();
+		Util.exec(cmd);
 	}
 	
 	void delete(Instance instance){
 		log.info("delete Instance: {}", instance);
-		Util.exec("lxc delete " + instance.getName());
+		Util.exec("lxc delete " + instance.getName() + " --force");
 	}
 	
 	void start(Instance instance){
@@ -48,7 +55,7 @@ public class LXDActor extends VMActor {
 		Util.exec("lxc stop " + instance.getName());
 	}
 	
-	void setResource(Instance instance){
+	/*void setResource(Instance instance){
 		setCPU(instance);
 		setRAM(instance);
 		setDISK(instance);		
@@ -67,5 +74,5 @@ public class LXDActor extends VMActor {
 	void setDISK(Instance instance){
 		log.info("set Instance's disk size");
 		Util.exec("lxc config device set " + instance.getName() + " root size " + instance.getFlavor().getDisk() + "GB");
-	}
+	}*/
 }
