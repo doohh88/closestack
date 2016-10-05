@@ -1,15 +1,17 @@
 package com.ssmksh.closestack.master;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.ssmksh.closestack.dto.Flavor;
 import com.ssmksh.closestack.dto.Instance;
 import com.ssmksh.closestack.dto.TellCommand;
 import com.ssmksh.closestack.query.QueryConf;
+import com.ssmksh.closestack.util.IP;
 import com.ssmksh.closestack.util.Node;
+import com.ssmksh.closestack.util.PropFactory;
 import com.ssmksh.closestack.util.Util;
 
-import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent.CurrentClusterState;
@@ -27,12 +29,13 @@ public class Master extends UntypedActor {
 	LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 	Cluster cluster = Cluster.get(getContext().system());
 	Resource rcPool = null;
-
+	ArrayList<IP> ipPool = null;
 	// subscribe to cluster changes, MemberUp
 	@Override
 	public void preStart() {
 		cluster.subscribe(getSelf(), MemberUp.class, UnreachableMember.class);
 		rcPool = Resource.getInstance();
+		ipPool = PropFactory.getInstance().getIpPool();
 		String actorURL = cluster.selfAddress().toString() + "/user/master";
 		Util.write("actor.url", actorURL);
 	}
@@ -50,9 +53,9 @@ public class Master extends UntypedActor {
 			Node node = (Node) message;
 			System.out.println(node);
 			rcPool.put(node);
-			log.info("total CPUs = {}", rcPool.getCPU());
-			log.info("total RAMs = {}", rcPool.getRAM());
-			log.info("total DISKs = {}", rcPool.getDISK());
+//			log.info("total CPUs = {}", rcPool.getCPU());
+//			log.info("total RAMs = {}", rcPool.getRAM());
+//			log.info("total DISKs = {}", rcPool.getDISK());
 		} else if (message instanceof CurrentClusterState) {
 			CurrentClusterState state = (CurrentClusterState) message;
 			log.info("Current members: {}", state.members());
@@ -63,7 +66,7 @@ public class Master extends UntypedActor {
 		} else if (message instanceof UnreachableMember) {
 			UnreachableMember mUnreachable = (UnreachableMember) message;
 			log.info("Member detected as unreachable: {}", mUnreachable.member());
-			rcPool.remove(mUnreachable);
+			rcPool.remove(mUnreachable); //리소스 반환
 		} else if (message instanceof MemberRemoved) {
 			MemberRemoved mRemoved = (MemberRemoved) message;
 			log.info("Member is Removed: {}", mRemoved.member());
@@ -96,41 +99,50 @@ public class Master extends UntypedActor {
 			TellCommand tellCommand = (TellCommand) message;
 			Instance instance = (Instance) tellCommand.getData();
 			Flavor flavor = (Flavor) instance.getFlavor();
-			if (instance.getType().equals("lxd")) {
-				Collection<Node> values = rcPool.getLxdNodes().values();
-				ActorRef worker = null;
-				for (Node node : values) {
-					if (node.canSave(flavor)) {
-						worker = node.getActorRef();
-						break;
+			
+			if(tellCommand.getCommand().equals("generate")){
+				log.info("receive generate");
+				int ipidx = getIp(instance);
+				log.info("getip: {}", instance.getIp());
+				String ip = ipPool.get(ipidx).getAddr();
+				
+				if(ipidx == -1){
+					System.out.println("no IP");
+					getSender().tell("fail", getSelf());
+				}
+				else{
+					Node node = getNode(instance);
+					if(node == null){
+						System.out.println("no space");
+						TellCommand rts = new TellCommand<String>("master", "tell", "createFail", "0");
+						getSender().tell(rts, getSelf());
+					}
+					else{
+						System.out.println("ok");
+						log.info("send tellCommand to {}", node);
+						log.info("cmd: {}", tellCommand.getCommand());
+						node.getActorRef().tell(tellCommand, getSender());
+						log.info("complete to send tellCommand to {}", node);
+												
+						TellCommand rts = new TellCommand<Instance>("master", "tell", "createSuccess", instance);
+						log.info("cmd: {}", rts.getCommand());
+						log.info("ip: {}", ((Instance)rts.getData()).getIp());
+						getSender().tell(rts, getSelf());
+						log.info("complete to send tellCommand to web");						
+						ipPool.get(ipidx).setNode(node);												
 					}
 				}
-				if (worker == null) { //생성할 공간이 없음
-					System.out.println("no space");
-					getSender().tell("fail", getSelf());
-				} else{
-					System.out.println("ok");
-					getSender().tell("ok", getSelf());
-					worker.tell(tellCommand, getSender());
-				}
-
-			} else if (instance.getType().equals("kvm")) {
-				Collection<Node> values = rcPool.getKvmNodes().values();
-				ActorRef worker = null;
-				for (Node node : values) {
-					if (node.canSave(flavor)) {
-						worker = node.getActorRef();
-						break;
-					}
-				}
-				if (worker == null) { 
-					System.out.println("no space");
-					getSender().tell("fail", getSelf());
-				} else{
-					System.out.println("ok");
-					getSender().tell("ok", getSelf());
-					worker.tell(tellCommand, getSender());
-				}
+			}
+			else if(tellCommand.getCommand().equals("getresource")){
+				log.info("receive getResource");
+				getSender().tell("hello", getSelf());
+			}
+			else {
+				//delete, start, stop, restart
+				log.info("receive {}", tellCommand.getCommand());
+				System.out.println(instance.getIp());
+				Node node = findNodebyIP(tellCommand);
+				node.getActorRef().tell(tellCommand, getSender());
 			}
 		}
 
@@ -148,5 +160,58 @@ public class Master extends UntypedActor {
 			Node masterNode = new Node(getSelf(), "master");
 			getContext().actorSelection(member.address() + "/user/worker").tell(masterNode, getSelf());
 		}
+	}
+	
+	int getIp(Instance instance){
+		int len = ipPool.size();
+		for(int i = 0 ; i < len ; i++){
+			IP ip = ipPool.get(i);
+			if(!ip.isUsed()){
+				instance.setIp(ip.getAddr()); //ip setting
+				ip.setUsed(true);
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	Node getNode(Instance instance){
+		Collection<Node> values = getCollection(instance);
+		for (Node node : values) {
+			if (node.canSave(instance.getFlavor())) {
+				return node;
+			}
+		}
+		return null;
+	}
+	
+	Node findNodebyIP(TellCommand tellCommand){
+		Node node = null;
+		Instance instance = (Instance) tellCommand.getData();
+		String findIp = instance.getIp();
+		int len = ipPool.size();
+		for(int i = 0 ; i < len ; i++){
+			IP ip = ipPool.get(i);
+			if(ip.getAddr().equals(findIp)){
+				node = ip.getNode();
+				//회수
+				if(tellCommand.getCommand().equals("delete")){
+					ip.setUsed(false);
+					ip.setNode(null);	
+				}
+				return node;
+			}
+		}
+		return null;
+	}
+	
+	Collection<Node> getCollection(Instance instance){
+		if (instance.getType().equals("lxd")) {
+			return rcPool.getLxdNodes().values();
+		}
+		else if(instance.getType().equals("kvm")){
+			return rcPool.getKvmNodes().values();
+		}
+		return null;
 	}
 }

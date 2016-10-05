@@ -1,7 +1,7 @@
 package com.ssmksh.closestack.util;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -14,9 +14,10 @@ public class PropFactory {
 
 	private static PropFactory instance;
 	private static Properties props;
-	String[] IPPool;
+	String[] ipList;
 	String[] seedList;
 	String seedConf;
+	ArrayList ipPool = new ArrayList<IP>(); 
 
 	private PropFactory() {	}
 
@@ -69,9 +70,20 @@ public class PropFactory {
 		return seedNodes;
 	}
 	
-	private void setIPPool(){
+	public void setIpList() {
 		String IPs = props.getProperty("ip-pool");
-		IPPool = IPs.split(",");
+		ipList = IPs.split(",");
+		for(String ip : ipList){
+			ipPool.add(new IP(ip, false, null));
+		}		
 	}
 	
+	public String[] getIpList() {
+		return ipList;
+	}
+	
+	public ArrayList<IP> getIpPool() {
+		setIpList();
+		return ipPool;
+	}
 }

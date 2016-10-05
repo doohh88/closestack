@@ -2,6 +2,9 @@ package com.ssmksh.closestack.master;
 
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ssmksh.closestack.util.Node;
 
 import akka.actor.Address;
@@ -9,6 +12,7 @@ import akka.cluster.ClusterEvent.UnreachableMember;
 
 public enum Resource {
 	INSTANCE;
+	private static final Logger log = LoggerFactory.getLogger(Resource.class);
 	private static HashMap<Address, Node> kvmNodes;
 	private static HashMap<Address, Node> lxdNodes;	
 	private static int CPU = 0;
@@ -25,14 +29,14 @@ public enum Resource {
 		CPU += node.getCPU();
 		RAM += node.getRAM();
 		DISK += node.getDISK();
+		log.info("Tatal: " + CPU + "cpu" + RAM + "ram" + DISK + "disk");
 		if(node.getRole().equals("kvm")){
 			kvmNodes.put(node.getActorRef().path().address(), node);
-			System.out.println("kvmNodes");
-			System.out.println(kvmNodes);
+			log.info("kvmNodes: " + kvmNodes);
+			
 		} else if(node.getRole().equals("lxd")){
 			lxdNodes.put(node.getActorRef().path().address(), node);
-			System.out.println("lxdNodes");
-			System.out.println(lxdNodes);
+			log.info("lxdNodes: " + lxdNodes);
 		}				
 	}
 	
@@ -48,7 +52,10 @@ public enum Resource {
 		
 		kvmNodes.remove(mUnreachable.member().address());
 		lxdNodes.remove(mUnreachable.member().address());
-		
+
+		log.info("Tatal: " + CPU + "cpu" + RAM + "ram" + DISK + "disk");
+		log.info("kvmNodes: " + kvmNodes);
+		log.info("lxdNodes: " + lxdNodes);
 	}
 	
 		

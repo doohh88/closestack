@@ -14,15 +14,24 @@ public class LXDActor extends VMActor {
 	@Override
 	public void onReceive(Object message) throws Throwable {
 		if (message instanceof TellCommand) {
+			log.info("receive tellCommand [LXDActor]");
 			TellCommand tellCommand = (TellCommand)message;
 			String cmd = tellCommand.getCommand();
 			Instance instance = (Instance)tellCommand.getData();
-			if(cmd.equals("generate")){				
+			log.info("command: {}", tellCommand.getCommand());
+			if(cmd.equals("generate")){	
 				generate(instance);
-				//setResource(instance);				
 			} else if(cmd.equals("delete")){
 				delete(instance);
-			} 
+			} else if(cmd.equals("start")){
+				start(instance);
+			} else if(cmd.equals("stop")){
+				stop(instance);
+			} else if(cmd.equals("restart")){
+				restart(instance);
+			} else{
+				log.info("no operate: {}", cmd);
+			}
 		} else {
 			unhandled(message);
 		}
@@ -36,13 +45,17 @@ public class LXDActor extends VMActor {
 				+ instance.getName() + " "
 				+ instance.getFlavor().getvCpus() + " "
 				+ instance.getFlavor().getRam() + " "
-				+ instance.getFlavor().getDisk();
+				+ instance.getFlavor().getDisk() + " "
+				+ instance.getIp() + " "
+				+ instance.getUserName() + " "
+				+ instance.getPw();
 		Util.exec(cmd);
 	}
 	
 	void delete(Instance instance){
 		log.info("delete Instance: {}", instance);
 		Util.exec("lxc delete " + instance.getName() + " --force");
+		
 	}
 	
 	void start(Instance instance){
@@ -55,24 +68,8 @@ public class LXDActor extends VMActor {
 		Util.exec("lxc stop " + instance.getName());
 	}
 	
-	/*void setResource(Instance instance){
-		setCPU(instance);
-		setRAM(instance);
-		setDISK(instance);		
+	void restart(Instance instance){
+		log.info("restart Instance: {}", instance);
+		Util.exec("lxc restart " + instance.getName());
 	}
-	
-	void setCPU(Instance instance){
-		log.info("set Instance's cpu");
-		Util.exec("lxc config set " + instance.getName() + " limits.cpu " + instance.getFlavor().getvCpus());
-	}
-	
-	void setRAM(Instance instance){
-		log.info("set Instance's ram");
-		Util.exec("lxc config set " + instance.getName() + " limits.memory " + instance.getFlavor().getRam() + "GB");
-	}
-	
-	void setDISK(Instance instance){
-		log.info("set Instance's disk size");
-		Util.exec("lxc config device set " + instance.getName() + " root size " + instance.getFlavor().getDisk() + "GB");
-	}*/
 }

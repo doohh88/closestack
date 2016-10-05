@@ -1,6 +1,7 @@
 package com.ssmksh.closestack.util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import com.ssmksh.closestack.dto.Flavor;
 
@@ -20,6 +21,7 @@ public class Node implements Serializable {
 	private int restCPU = 0;
 	private int restRAM = 0;
 	private int restDISK = 0;
+	private ArrayList<String> ips = new ArrayList<String>();
 
 	public Node(ActorRef actorRef, String role) {
 		this.actorRef = actorRef;
@@ -61,13 +63,30 @@ public class Node implements Serializable {
 	}
 	
 	public boolean canSave(Flavor flavor){
-		restCPU = CPU - usedCPU;
-		restRAM = RAM - usedRAM;
-		restDISK = DISK - usedDISK;
-		
+		calRestResource();
 		if(flavor.getvCpus() > restCPU || flavor.getRam() > restRAM || flavor.getDisk() > restDISK)
 			return false;
 				
 		return true;
+	}
+	
+	public void useResource(Flavor flavor){
+		usedCPU += flavor.getvCpus();
+		usedRAM += flavor.getRam();
+		usedDISK += flavor.getDisk();
+		calRestResource();
+	}
+	
+	public void returnResource(Flavor flavor){
+		usedCPU -= flavor.getvCpus();
+		usedRAM -= flavor.getRam();
+		usedDISK -= flavor.getDisk();
+		calRestResource();
+	}
+	
+	public void calRestResource(){
+		restCPU = CPU - usedCPU;
+		restRAM = RAM - usedRAM;
+		restDISK = DISK - usedDISK;
 	}
 }

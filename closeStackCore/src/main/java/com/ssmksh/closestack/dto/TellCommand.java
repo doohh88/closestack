@@ -19,6 +19,10 @@ public class TellCommand<T> implements Serializable {
 	   public String getCommand() {
 	      return command;
 	   }
+	   
+	   public void setCommand(String command) {
+		this.command = command;
+	}
 
 	   public T getData() {
 	      return data;

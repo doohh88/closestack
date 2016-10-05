@@ -53,13 +53,11 @@ public class Util {
 				Process p = Runtime.getRuntime().exec(cmd);
 				BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				rst = br.readLine();
-				if (rst.contains("Permission denied")) {
-					rst = br.readLine();
-				}
-//				String line;
-//				while((line = br.readLine()) != null){
-//			        System.out.println(line);
-//			    }
+				String line;
+				while((line = br.readLine()) != null){
+			        //System.out.println(line);
+					log.info("{}", line);
+			    }
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
