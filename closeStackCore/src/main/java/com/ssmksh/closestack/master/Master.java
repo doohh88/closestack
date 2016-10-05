@@ -5,6 +5,9 @@ import java.util.Collection;
 
 import com.ssmksh.closestack.dto.Flavor;
 import com.ssmksh.closestack.dto.Instance;
+import com.ssmksh.closestack.dto.Network;
+import com.ssmksh.closestack.dto.Overall;
+import com.ssmksh.closestack.dto.SnapShot;
 import com.ssmksh.closestack.dto.TellCommand;
 import com.ssmksh.closestack.query.QueryConf;
 import com.ssmksh.closestack.util.IP;
@@ -96,11 +99,11 @@ public class Master extends UntypedActor {
 		// TellCommand
 		else if (message instanceof TellCommand) {
 			System.out.println("get TellCommand");
-			TellCommand tellCommand = (TellCommand) message;
-			Instance instance = (Instance) tellCommand.getData();
-			Flavor flavor = (Flavor) instance.getFlavor();
+			TellCommand tellCommand = (TellCommand) message;			
 			
 			if(tellCommand.getCommand().equals("generate")){
+				Instance instance = (Instance) tellCommand.getData();
+				Flavor flavor = (Flavor) instance.getFlavor();
 				log.info("receive generate");
 				int ipidx = getIp(instance);
 				log.info("getip: {}", instance.getIp());
@@ -133,12 +136,25 @@ public class Master extends UntypedActor {
 					}
 				}
 			}
-			else if(tellCommand.getCommand().equals("getresource")){
+			else if(tellCommand.getCommand().equals("getNetwork")){
+				log.info("receive getNetwork");
+				Network network = new Network();
+				setNetwork(network, ipPool);
+				TellCommand rts = new TellCommand<Network>("master", "tell", "networkSuccess", network);
+				getSender().tell(rts, getSelf());
+				log.info("Network: {}", network);
+			}
+			else if(tellCommand.getCommand().equals("getResource")){
 				log.info("receive getResource");
-				getSender().tell("hello", getSelf());
+				Overall overall = new Overall(rcPool.getCPU(), rcPool.getRAM(), rcPool.getDISK(), ipPool.size());
+				TellCommand rts = new TellCommand<Overall>("master", "tell", "resourceSuccess", overall);
+				getSender().tell(rts, getSelf());
+				log.info("Overall: {}", overall);
 			}
 			else {
 				//delete, start, stop, restart
+				Instance instance = (Instance) tellCommand.getData();
+				Flavor flavor = (Flavor) instance.getFlavor();
 				log.info("receive {}", tellCommand.getCommand());
 				System.out.println(instance.getIp());
 				Node node = findNodebyIP(tellCommand);
@@ -187,8 +203,18 @@ public class Master extends UntypedActor {
 	
 	Node findNodebyIP(TellCommand tellCommand){
 		Node node = null;
-		Instance instance = (Instance) tellCommand.getData();
-		String findIp = instance.getIp();
+		Instance instance = null;
+		SnapShot snapshot = null;
+		String findIp = null;
+		if(tellCommand.getData() instanceof Instance){
+			instance = (Instance) tellCommand.getData();
+			findIp = instance.getIp();
+		}
+		else {
+			snapshot= (SnapShot) tellCommand.getData();
+			findIp = snapshot.getIp();
+		}		
+		
 		int len = ipPool.size();
 		for(int i = 0 ; i < len ; i++){
 			IP ip = ipPool.get(i);
@@ -213,5 +239,23 @@ public class Master extends UntypedActor {
 			return rcPool.getKvmNodes().values();
 		}
 		return null;
+	}
+	
+	void setNetwork(Network network, ArrayList<IP> ipPool){
+		ArrayList<com.ssmksh.closestack.dto.IP> ips = new ArrayList<com.ssmksh.closestack.dto.IP>();  
+		for(IP ip : ipPool){
+			com.ssmksh.closestack.dto.IP i = null;
+			if(ip.getNode() != null){
+				i = new com.ssmksh.closestack.dto.IP(ip.getAddr(), ip.isUsed(), ip.getNode().getActorRef().path().address().toString());
+			}
+			else{
+				i = new com.ssmksh.closestack.dto.IP(ip.getAddr(), ip.isUsed(), "0");
+			}
+			log.info("IP: {}", i);
+			ips.add(i);
+			//network.getIps().add(i);
+			log.info("network.getIps(): {}", network.getIps());
+		}
+		network.setIps(ips);
 	}
 }

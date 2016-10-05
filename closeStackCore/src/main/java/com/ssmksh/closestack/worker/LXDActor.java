@@ -1,6 +1,7 @@
 package com.ssmksh.closestack.worker;
 
 import com.ssmksh.closestack.dto.Instance;
+import com.ssmksh.closestack.dto.SnapShot;
 import com.ssmksh.closestack.dto.TellCommand;
 import com.ssmksh.closestack.util.Util;
 
@@ -17,9 +18,16 @@ public class LXDActor extends VMActor {
 			log.info("receive tellCommand [LXDActor]");
 			TellCommand tellCommand = (TellCommand)message;
 			String cmd = tellCommand.getCommand();
-			Instance instance = (Instance)tellCommand.getData();
+			Instance instance = null;
+			SnapShot snapshot = null;
+			if(tellCommand.getData() instanceof Instance){
+				instance = (Instance)tellCommand.getData();
+			} else{
+				snapshot = (SnapShot)tellCommand.getData();
+			}
+			
 			log.info("command: {}", tellCommand.getCommand());
-			if(cmd.equals("generate")){	
+			if(cmd.equals("generate")){				
 				generate(instance);
 			} else if(cmd.equals("delete")){
 				delete(instance);
@@ -29,6 +37,14 @@ public class LXDActor extends VMActor {
 				stop(instance);
 			} else if(cmd.equals("restart")){
 				restart(instance);
+			} else if(cmd.equals("snapshot")){
+				snapshot(snapshot);
+			} else if(cmd.equals("deleteSanpshot")){
+				deleteSanpshot(snapshot);
+			} else if(cmd.equals("restoreSanpshot")){
+				restoreSanpshot(snapshot);
+			} else if(cmd.equals("createSanpshot")){
+				createSanpshot(snapshot);
 			} else{
 				log.info("no operate: {}", cmd);
 			}
@@ -72,4 +88,28 @@ public class LXDActor extends VMActor {
 		log.info("restart Instance: {}", instance);
 		Util.exec("lxc restart " + instance.getName());
 	}
+	
+	void snapshot(SnapShot snapshot){
+		log.info("snapshot Instance: {}", snapshot);
+		Util.exec("lxc snapshot " + snapshot.getVmName() + " " + snapshot.getName());
+	}
+	
+	void deleteSanpshot(SnapShot snapshot){
+		log.info("deleteSanpshot Instance: {}", snapshot);
+		Util.exec("lxc delete " + snapshot.getVmName() + " " + snapshot.getName());
+	}
+	
+	void restoreSanpshot(SnapShot snapshot){
+		log.info("restoreSanpshot Instance: {}", snapshot);
+		Util.exec("lxc restore " + snapshot.getVmName() + " " + snapshot.getName());
+	}
+	
+	void createSanpshot(SnapShot snapshot){
+		log.info("createSanpshot Instance: {}", snapshot);
+		Util.exec("lxc copy " + snapshot.getVmName() + "/" + snapshot.getName() + " " + snapshot.getNewName());
+	}
+	
+	//lxc copy <source container>/<snapshot name> <destination container>
+	
+
 }
