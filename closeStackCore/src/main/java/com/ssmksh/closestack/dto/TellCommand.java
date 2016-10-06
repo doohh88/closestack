@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 public class TellCommand<T> implements Serializable {
 
-	   private String who; // master, web
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String who; // master, web
 	   private String sendType; // ask, tell
 	   private String command;
 	   private T data;

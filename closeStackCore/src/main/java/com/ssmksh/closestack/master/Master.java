@@ -153,11 +153,12 @@ public class Master extends UntypedActor {
 			}
 			else {
 				//delete, start, stop, restart
-				Instance instance = (Instance) tellCommand.getData();
-				Flavor flavor = (Flavor) instance.getFlavor();
+				//Instance instance = (Instance) tellCommand.getData();
+				//Flavor flavor = (Flavor) instance.getFlavor();
 				log.info("receive {}", tellCommand.getCommand());
-				System.out.println(instance.getIp());
+				//System.out.println(instance.getIp());
 				Node node = findNodebyIP(tellCommand);
+				log.info("node: {}", node.getActorRef());
 				node.getActorRef().tell(tellCommand, getSender());
 			}
 		}
@@ -207,10 +208,12 @@ public class Master extends UntypedActor {
 		SnapShot snapshot = null;
 		String findIp = null;
 		if(tellCommand.getData() instanceof Instance){
+			log.info("Data: Instnace");
 			instance = (Instance) tellCommand.getData();
 			findIp = instance.getIp();
 		}
 		else {
+			log.info("Data: SnapShot");
 			snapshot= (SnapShot) tellCommand.getData();
 			findIp = snapshot.getIp();
 		}		

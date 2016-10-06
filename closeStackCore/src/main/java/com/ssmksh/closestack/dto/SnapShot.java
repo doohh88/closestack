@@ -1,7 +1,6 @@
 package com.ssmksh.closestack.dto;
 
 import java.io.Serializable;
-import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,13 +9,18 @@ import lombok.Data;
 @AllArgsConstructor
 public class SnapShot implements Serializable {
    
-   
-   private String id;
+
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+private String id;
    private String name;
    private String vmName;
    private String type;
-   private LocalTime time;
+   private String time;
    private String newName;
    private String ip;
+   
 
-}	
+}

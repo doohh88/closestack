@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Overall implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int cpu;
 	private int ram;
 	private int disk;

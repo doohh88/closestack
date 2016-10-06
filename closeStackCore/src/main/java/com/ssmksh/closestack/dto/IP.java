@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class IP implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String ip;
 	boolean used;
 	String hostIp;

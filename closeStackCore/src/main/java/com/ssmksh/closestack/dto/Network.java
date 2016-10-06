@@ -7,5 +7,9 @@ import lombok.Data;
 
 @Data
 public class Network implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	ArrayList<IP> ips;
 }

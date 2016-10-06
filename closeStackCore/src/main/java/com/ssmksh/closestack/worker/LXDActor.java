@@ -28,7 +28,7 @@ public class LXDActor extends VMActor {
 			
 			log.info("command: {}", tellCommand.getCommand());
 			if(cmd.equals("generate")){				
-				generate(instance);
+				generate(instance);				
 			} else if(cmd.equals("delete")){
 				delete(instance);
 			} else if(cmd.equals("start")){
@@ -43,8 +43,8 @@ public class LXDActor extends VMActor {
 				deleteSanpshot(snapshot);
 			} else if(cmd.equals("restoreSanpshot")){
 				restoreSanpshot(snapshot);
-			} else if(cmd.equals("createSanpshot")){
-				createSanpshot(snapshot);
+			} else if(cmd.equals("generateSanpshot")){
+				generateSanpshot(snapshot);
 			} else{
 				log.info("no operate: {}", cmd);
 			}
@@ -104,12 +104,8 @@ public class LXDActor extends VMActor {
 		Util.exec("lxc restore " + snapshot.getVmName() + " " + snapshot.getName());
 	}
 	
-	void createSanpshot(SnapShot snapshot){
-		log.info("createSanpshot Instance: {}", snapshot);
+	void generateSanpshot(SnapShot snapshot){
+		log.info("generateSanpshot Instance: {}", snapshot);
 		Util.exec("lxc copy " + snapshot.getVmName() + "/" + snapshot.getName() + " " + snapshot.getNewName());
 	}
-	
-	//lxc copy <source container>/<snapshot name> <destination container>
-	
-
 }
