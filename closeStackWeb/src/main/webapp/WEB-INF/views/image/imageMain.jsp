@@ -42,44 +42,44 @@
 		<div class="container-fluid"
 			style="margin-left: 50px; margin-right: 50px">
 
-				<div class="col-lg-12">
-                    <h1 class="page-header">Image</h1>
-                </div>
-
-
-			<div align="right" style="margin-bottom: 20px">
-				<button type="button" class="btn btn-danger" data-toggle="modal"
-					data-target="#createImage">+ 이미지생성</button>
+			<div class="col-lg-12">
+				<h1 class="page-header">Image</h1>
 			</div>
 
 
-			<table class="table table-bordered table-striped" data-height="299">
-				<thead>
-					<tr>
-						<th data-field="check"><input name="select" type="checkbox"
-							value="select" /></th>
-						<th data-field="image_name">이미지 이름</th>
-						<th data-field="image_type">타입</th>
-						<th data-field="image_status">상태</th>
-						<th data-field="image_share">공용</th>
-						<th data-field="image_protect">보호함</th>
-						<th data-field="image_format">포맷</th>
-					</tr>
-
-					<c:forEach items="${imageList}" var="dto">
+			<div align="right" style="margin-bottom: 20px">
+				<button type="button" class="btn btn-primary" data-toggle="modal"
+					data-target="#createImage">+ 이미지 생성</button>
+				<button type="button" class="btn btn-danger" id="delete">- 이미지 삭제</button>
+			</div>
+			<form id="deleteSnapShotProc" action="deleteSnapShotProc"
+				method="post">
+				<table class="table table-bordered table-striped" data-height="299">
+					<thead>
 						<tr>
-							<td><input name="select" type="checkbox" value="select" /></td>
-							<td><a href="<%=C.Url.IMAGE_DETAIL%>">${dto.name}</a></td>
-							<td>${dto.type}</td>
-							<td>${dto.status}</td>
-							<td>${dto.share}</td>
-							<td>${dto.protect}</td>
-							<td>${dto.format}</td>
-
+							<th data-field="check"><input name="select" type="checkbox"
+								value="select" /></th>
+							<th data-field="image_name">이미지 이름</th>
+							<th data-field="image_type">가상머신 이름</th>
+							<th data-field="image_status">새로운 이름</th>
+							<th data-field="image_share">타입</th>
+							<th data-field="image_protect">만들어진 시간</th>
 						</tr>
-					</c:forEach>
-				</thead>
-			</table>
+	
+						<c:forEach items="${snapShopList}" var="dto">
+							<tr>
+								<td><input name="check" type="checkbox" value="${dto.name}" /></td>
+								<td>${dto.name}</td>
+								<td>${dto.vmName}</td>
+								<td>${dto.newName}</td>
+								<td>${dto.type}</td>
+								<td>${dto.time}</td>
+	
+							</tr>
+						</c:forEach>
+					</thead>
+				</table>
+			</form>
 
 
 
@@ -93,17 +93,17 @@
 
 	<div class="modal fade" id="createImage" tabindex="-1" role="dialog"
 		aria-labelledby="createImage" aria-hidden="true">
-		
-			<form role="form" action="crateImageproc" method="post">
+
+		<form role="form" action="crateImageproc" method="post">
 			<fieldset>
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">X</button>
-					<h4 class="modal-title" id="myModalLabel">이미지 생성</h4>
-				</div>
-				<div class="modal-body">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">X</button>
+							<h4 class="modal-title" id="myModalLabel">이미지 생성</h4>
+						</div>
+						<div class="modal-body">
 							<div class="form-group">
 								<p>이름:*</p>
 								<input class="form-control" placeholder="Image name"
@@ -114,33 +114,39 @@
 								<input class="form-control" placeholder=""
 									name="IamgeDescription" type="text">
 							</div>
-							<div class="form-group">
-								<div class="dropdown open">
-									<button class="btn btn-secondary dropdown-toggle" type="button"
-										id="dropdownMenuButton" data-toggle="dropdown"
-										aria-haspopup="true" aria-expanded="false">Dropdown
-										button</button>
-									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-										<a class="dropdown-item" href="#">Action</a> <a
-											class="dropdown-item" href="#">Another action</a> <a
-											class="dropdown-item" href="#">Something else here</a>
-									</div>
-								</div>
-						
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
-			</div>
-		</div>
-		
-		</fieldset>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-primary">Save
+								changes</button>
+						</div>
+					</div>
+			</fieldset>
 		</form>
-		
+
 	</div>
 
+	<div class="modal fade" id="error" tabindex="-1" role="dialog"
+		aria-labelledby="createSnapShot" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">X</button>
+					<h4 class="modal-title" id="myModalLabel">Error</h4>
+				</div>
+				<div class="modal-body" style="padding:20px">
+					이미지를 선택해주세요.
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default"
+						data-dismiss="modal">확인</button>
+				</div>
 
+			</div>
+		</div>
+	</div>
 
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"
 		type="text/javascript"></script>
@@ -149,5 +155,32 @@
 	<script
 		src="<%=cp%>/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
+
+	<script type="text/javascript">
+	$('#delete').on('click', function(e) {
+ 		console.log("delete click");
+			var data;
+			var check=true;
+			$.each($("input[name='check']:checked"), function() {
+				data = $(this).val();
+				check=false;
+			});
+			
+			if(check){
+				$('#error').modal('toggle');
+			}else{
+				var input = $("<input>").attr("type", "hidden").attr(
+						"name", "snapShotName").val(data);
+				$('#deleteSnapShotProc').append($(input));
+				$('#deleteSnapShotProc').submit();
+				
+				$('#delete').modal('toggle');
+				
+			}
+			
+	
+	});
+	
+	</script>
 </body>
 </html>

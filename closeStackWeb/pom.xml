@@ -138,6 +138,11 @@
 			<artifactId>akka-cluster_2.11</artifactId>
 			<version>2.4.10</version>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.10</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -211,4 +216,13 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	  <repositories>
+        <repository>
+            <id>akka.repository</id>
+            <name>Akka Maven Repository</name>
+            <url>http://repo.akka.io/releases/</url>
+        </repository>
+    </repositories>
+	
 </project>

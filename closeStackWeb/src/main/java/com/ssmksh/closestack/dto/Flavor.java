@@ -1,9 +1,15 @@
 package com.ssmksh.closestack.dto;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 
-public class Flavor {
+public class Flavor implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	private String name;
 	private int vCpus;

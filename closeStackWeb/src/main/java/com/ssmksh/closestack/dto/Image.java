@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 public class Image {
 
 	@Id
+	private String id;
 	private String name;
 	private String type;
 	private String status;

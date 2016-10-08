@@ -40,17 +40,40 @@
 		<!-- /#sidebar-wrapper -->
 
 
-		<div class="container-fluid">
+		<div class="container-fluid"
+			style="margin-left: 50px; margin-right: 50px">
 
 			<div class="col-lg-12">
 				<h1 class="page-header">Network</h1>
 			</div>
 
+
+			<table class="table table-bordered table-striped" data-height="299"
+				style="margin-top: 100px">
+				<thead>
+					<tr class="success">
+						<th data-field="ip">Ip 林家</th>
+						<th data-field="vcpus">Host Ip 林家</th>
+						<th data-field="disk">Active</th>
+					</tr>
+					<c:forEach items="${ipList}" var="dto">
+						<tr>
+							<td>${dto.ip}</td>
+							<td>${dto.hostIp}</td>
+							<td>${dto.used}</td>
+
+						</tr>
+					</c:forEach>
+
+
+				</thead>
+			</table>
+
+
+
 		</div>
 	</div>
 
-
-	</div>
 	<!-- /#wrapper -->
 
 

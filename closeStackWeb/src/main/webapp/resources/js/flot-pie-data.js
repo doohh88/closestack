@@ -1,6 +1,8 @@
 //$document.ready 는 웹페이지 로딩이 완료되면 실행하도록 하는 함수
 $(document).ready(function() {
 	console.log("document ready");
+	
+
 	var offset = 0;
 	plot();
 	plot2();
