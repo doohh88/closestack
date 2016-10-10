@@ -29,7 +29,7 @@ public class WorkerMain {
 		String seedNodes = PropFactory.getInstance().getSeedConf("worker");
 		String role = null;
 		
-		WorkerMain.role = "lxd";
+		//WorkerMain.role = "lxd";
 		
 		if(WorkerMain.role.equals("none")){
 			log.info("please input the worker's role. ex) -r kvm or -r lxd");

@@ -43,6 +43,7 @@ public enum Resource {
 	public static void remove(UnreachableMember mUnreachable){
 		Node node = kvmNodes.get(mUnreachable.member().address());		
 		if(node == null){
+			log.info("remove lxdNode");
 			node = lxdNodes.get(mUnreachable.member().address());			
 		}
 		

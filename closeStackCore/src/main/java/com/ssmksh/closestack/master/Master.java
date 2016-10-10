@@ -15,6 +15,7 @@ import com.ssmksh.closestack.util.Node;
 import com.ssmksh.closestack.util.PropFactory;
 import com.ssmksh.closestack.util.Util;
 
+import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent.CurrentClusterState;
@@ -33,6 +34,7 @@ public class Master extends UntypedActor {
 	Cluster cluster = Cluster.get(getContext().system());
 	Resource rcPool = null;
 	ArrayList<IP> ipPool = null;
+	ActorSelection web = null;
 	// subscribe to cluster changes, MemberUp
 	@Override
 	public void preStart() {
@@ -41,6 +43,7 @@ public class Master extends UntypedActor {
 		ipPool = PropFactory.getInstance().getIpPool();
 		String actorURL = cluster.selfAddress().toString() + "/user/master";
 		Util.write("actor.url", actorURL);
+		web = getContext().actorSelection("akka.tcp://" + MasterMain.systemName + "@" + "211.189.20.11" + ":2551/user/netActor");
 	}
 
 	// re-subscribe when restart
@@ -102,6 +105,7 @@ public class Master extends UntypedActor {
 			TellCommand tellCommand = (TellCommand) message;			
 			
 			if(tellCommand.getCommand().equals("generate")){
+				//web = getSender();
 				Instance instance = (Instance) tellCommand.getData();
 				Flavor flavor = (Flavor) instance.getFlavor();
 				log.info("receive generate");
@@ -124,9 +128,12 @@ public class Master extends UntypedActor {
 						System.out.println("ok");
 						log.info("send tellCommand to {}", node);
 						log.info("cmd: {}", tellCommand.getCommand());
-						node.getActorRef().tell(tellCommand, getSender());
+						//node.getActorRef().tell(tellCommand, getSender());
+						node.getActorRef().tell(tellCommand, getSelf());
 						log.info("complete to send tellCommand to {}", node);
-												
+						log.info("before assign resource, Node: {}", node);
+						node.useResource(flavor);
+						log.info("after assign resource, Node: {}", node);
 						TellCommand rts = new TellCommand<Instance>("master", "tell", "createSuccess", instance);
 						log.info("cmd: {}", rts.getCommand());
 						log.info("ip: {}", ((Instance)rts.getData()).getIp());
@@ -151,15 +158,35 @@ public class Master extends UntypedActor {
 				getSender().tell(rts, getSelf());
 				log.info("Overall: {}", overall);
 			}
+			else if(tellCommand.getCommand().equals("complete")){
+				Instance instance = (Instance) tellCommand.getData();
+				log.info("complete to generate lxd: {}", instance);
+				TellCommand rts = new TellCommand<Instance>("master", "tell", "resourceSuccess", instance);
+				//getSender().tell(rts, getSelf());
+				web.tell(rts, getSelf());
+			}
+			else if(tellCommand.getCommand().equals("web")){
+				//web = getSender();
+			}
 			else {
-				//delete, start, stop, restart
+				//[delete, start, stop, restart, snapshot...]
+				
 				//Instance instance = (Instance) tellCommand.getData();
 				//Flavor flavor = (Flavor) instance.getFlavor();
 				log.info("receive {}", tellCommand.getCommand());
 				//System.out.println(instance.getIp());
 				Node node = findNodebyIP(tellCommand);
 				log.info("node: {}", node.getActorRef());
-				node.getActorRef().tell(tellCommand, getSender());
+				//node.getActorRef().tell(tellCommand, getSender());
+				node.getActorRef().tell(tellCommand, getSelf());
+				if(tellCommand.getCommand().equals("delete")){
+					//delete일때 자원 회수
+					log.info("before return resource, Node: {}", node);
+					Instance instance = (Instance) tellCommand.getData();
+					Flavor flavor = (Flavor) instance.getFlavor();
+					node.returnResource(flavor);
+					log.info("after return resource, Node: {}", node);
+				}
 			}
 		}
 
@@ -226,7 +253,7 @@ public class Master extends UntypedActor {
 				//회수
 				if(tellCommand.getCommand().equals("delete")){
 					ip.setUsed(false);
-					ip.setNode(null);	
+					ip.setNode(null);
 				}
 				return node;
 			}

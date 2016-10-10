@@ -39,11 +39,11 @@ public class LXDActor extends VMActor {
 				restart(instance);
 			} else if(cmd.equals("snapshot")){
 				snapshot(snapshot);
-			} else if(cmd.equals("deleteSanpshot")){
+			} else if(cmd.equals("deleteSnapshot")){
 				deleteSanpshot(snapshot);
-			} else if(cmd.equals("restoreSanpshot")){
+			} else if(cmd.equals("restoreSnapshot")){
 				restoreSanpshot(snapshot);
-			} else if(cmd.equals("generateSanpshot")){
+			} else if(cmd.equals("generateSnapshot")){
 				generateSanpshot(snapshot);
 			} else{
 				log.info("no operate: {}", cmd);
@@ -66,6 +66,10 @@ public class LXDActor extends VMActor {
 				+ instance.getUserName() + " "
 				+ instance.getPw();
 		Util.exec(cmd);
+		//String hostIP = Util.getHostIP(getSelf().path().address());
+		//Util.sshChecker(hostIP,instance, getSender());
+		Util.sshChecker(WorkerMain.hostIP, instance, getSender());
+		
 	}
 	
 	void delete(Instance instance){

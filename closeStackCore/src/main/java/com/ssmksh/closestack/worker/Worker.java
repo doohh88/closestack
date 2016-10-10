@@ -83,7 +83,7 @@ public class Worker extends UntypedActor {
 
 		else if (message instanceof TellCommand) {
 			log.info("receive tellCommand");
-			VMActor.tell(message, getSender());		
+			VMActor.tell(message, getSender());	//getSender(): master	
 		}
 		
 		else if (message instanceof String) {

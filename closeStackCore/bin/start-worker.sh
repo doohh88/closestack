@@ -15,5 +15,5 @@ fi
 #echo "CLOSESTACK_HOST = $CLOSESTACK_HOST"
 
 CLASS="com.ssmksh.closestack.worker.WorkerMain"
-java -cp $CLOSESTACK_HOME/jars/closestack-core.jar $CLASS -h $CLOSESTACK_HOST &
+java -cp $CLOSESTACK_HOME/jars/closestack-core.jar $CLASS -h $CLOSESTACK_HOST $1 $2 &
 #echo $!> worker.pid
